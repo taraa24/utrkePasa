@@ -1,4 +1,4 @@
-﻿namespace UtrkePasa.Domain;
+﻿namespace UtrkePasa.Domain.Entities;
 
 public class User
 {
