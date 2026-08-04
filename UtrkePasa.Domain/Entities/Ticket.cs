@@ -1,7 +1,7 @@
 using System.Numerics;
 
 namespace UtrkePasa.Domain.Entities;
-public class Tickets
+public class Ticket
 {
     public int TicketId{get; set;}
     public DateTime PlacedAt{get; set;}
