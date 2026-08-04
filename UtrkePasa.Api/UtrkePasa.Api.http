@@ -1,0 +1,6 @@
+@UtrkePasa.Api_HostAddress = http://localhost:5057
+
+GET {{UtrkePasa.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
