@@ -1,4 +1,6 @@
 
+using UtrkePasa.Domain.Entities;
+
 namespace UtrkePasa.Api.Services.Handler;
 
 public abstract class TicketPurchaseHandler : ITicketPurchaseHandler
@@ -9,4 +11,8 @@ public abstract class TicketPurchaseHandler : ITicketPurchaseHandler
         _next = next;
         return next;
     }
+
+    public abstract bool Handle(Ticket ticket);
+
+    
 }
