@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Api.Services;
 using UtrkePasa.Domain.Repository;
 using UtrkePasa.Domain.DataBase;
+using UtrkePasa.Api.Middleware;
 
 Env.Load("../.env");
 
@@ -15,6 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseNpgsql(connectionString));  
+
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -33,5 +35,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
+
+app.UseMiddleware<MyExceptionMiddleware>();
+
 
 app.Run();
