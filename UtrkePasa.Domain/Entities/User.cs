@@ -1,14 +1,19 @@
-﻿namespace UtrkePasa.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UtrkePasa.Domain.Entities;
 
 public class User
 {
-    public int UserId{get; set;}
-    public string Name{get; set;} = string.Empty;
-    public string Surname{get; set;} = string.Empty;
-    public string Email{get; set;} = string.Empty;
-    public string Password{get; set;} = string.Empty;
-    public float WalletState{get; set;}
+    [Key]
+    public int user_Id{get; set;}
 
-    public ICollection<Ticket> Tickets {get; set;} = new List<Ticket>();
+    
+    public string name{get; set;} = string.Empty;
+    public string surname{get; set;} = string.Empty;
+    public string email{get; set;} = string.Empty;
+    public string password{get; set;} = string.Empty;
+    public float wallet_State{get; set;}
+
+    public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
     
 }

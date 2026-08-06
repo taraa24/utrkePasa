@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Entities;
-using UtrkePasa.Domain.Repository;
+using UtrkePasa.Domain.DataBase;
 
  
-namespace UtrkePasa.Infrastructure.Repository;
+namespace UtrkePasa.Domain.Repository;
  
 public class UserRepository : Repository<User>, IUserRepository
 {
@@ -13,6 +13,6 @@ public class UserRepository : Repository<User>, IUserRepository
  
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
+        return await _dbSet.FirstOrDefaultAsync(u => u.email == email);
     }
 }

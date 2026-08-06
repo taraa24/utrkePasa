@@ -2,8 +2,7 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Api.Services;
 using UtrkePasa.Domain.Repository;
-using UtrkePasa.Infrastructure;
-using UtrkePasa.Infrastructure.Repository;
+using UtrkePasa.Domain.DataBase;
 
 Env.Load("../.env");
 

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using UtrkePasa.Domain.Repository;
- 
-namespace UtrkePasa.Infrastructure.Repository;
+using UtrkePasa.Domain.DataBase; 
+namespace UtrkePasa.Domain.Repository;
  
 public class Repository<T> : IRepository<T> where T : class
 {

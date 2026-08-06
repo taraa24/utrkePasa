@@ -1,12 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace UtrkePasa.Domain.Entities;
 public class Race
 {
-    public int RaceId{get; set;}
-    public string RaceName{get; set;} = string.Empty;
-    public DateTime StartOfTheRace{get; set;}
-    public DateTime EndOfTheRace{get; set;}
-    public string? ResultOfRace{get; set;} //? = null
+    [Key]
+    public int race_Id{get; set;}
 
-    public ICollection<Ticket> Tickets {get; set;} = new List<Ticket>();
-    public ICollection<RaceOdds> Odds{get; set;} = new List<RaceOdds>();
+    
+    public string race_Name{get; set;} = string.Empty;
+    public DateTime start_Of_The_Race{get; set;}
+    public DateTime end_Of_The_Race{get; set;}
+    public string? result_Of_Race{get; set;} //? = null
+
+    public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
+    public ICollection<RaceOdds> odds{get; set;} = new List<RaceOdds>();
 }

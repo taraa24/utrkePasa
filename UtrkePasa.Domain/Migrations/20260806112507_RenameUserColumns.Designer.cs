@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UtrkePasa.Infrastructure;
+using UtrkePasa.Domain.DataBase;
 
 #nullable disable
 
-namespace UtrkePasa.Infrastructure.Migrations
+namespace UtrkePasa.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260806071244_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260806112507_RenameUserColumns")]
+    partial class RenameUserColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,169 +27,173 @@ namespace UtrkePasa.Infrastructure.Migrations
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Race", b =>
                 {
-                    b.Property<int>("RaceId")
+                    b.Property<int>("race_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RaceId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("race_Id"));
 
-                    b.Property<DateTime>("EndOfTheRace")
+                    b.Property<DateTime>("end_Of_The_Race")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RaceName")
+                    b.Property<string>("race_Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ResultOfRace")
+                    b.Property<string>("result_Of_Race")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("StartOfTheRace")
+                    b.Property<DateTime>("start_Of_The_Race")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("RaceId");
+                    b.HasKey("race_Id");
 
                     b.ToTable("Race");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceOdds", b =>
                 {
-                    b.Property<int>("RaceOddsId")
+                    b.Property<int>("race_Odds_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RaceOddsId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("race_Odds_Id"));
 
-                    b.Property<string>("ExpectedResult")
+                    b.Property<string>("expected_Result")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("Odds")
+                    b.Property<float>("odds")
                         .HasColumnType("real");
 
-                    b.Property<int>("RaceId")
+                    b.Property<int>("race_Id")
                         .HasColumnType("integer");
 
-                    b.HasKey("RaceOddsId");
+                    b.Property<int?>("race_Id1")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("RaceId");
+                    b.HasKey("race_Odds_Id");
+
+                    b.HasIndex("race_Id1");
 
                     b.ToTable("RaceOdds");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Ticket", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<int>("ticket_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TicketId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ticket_Id"));
 
-                    b.Property<float>("PaidForTicket")
+                    b.Property<float>("paid_For_Ticket")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("PlacedAt")
+                    b.Property<DateTime>("placed_At")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RaceId")
+                    b.Property<int>("race_Id")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RaceOddsId")
+                    b.Property<int?>("race_Id1")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("race_Odds_Id")
                         .HasColumnType("integer");
 
-                    b.HasKey("TicketId");
+                    b.Property<int?>("race_Odds_Id1")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("RaceId");
+                    b.Property<int>("user_Id")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("RaceOddsId");
+                    b.Property<int?>("user_Id1")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("ticket_Id");
+
+                    b.HasIndex("race_Id1");
+
+                    b.HasIndex("race_Odds_Id1");
+
+                    b.HasIndex("user_Id1");
 
                     b.ToTable("Ticket");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("user_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("user_Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
+                    b.Property<string>("surname")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("WalletState")
+                    b.Property<float>("wallet_State")
                         .HasColumnType("real");
 
-                    b.HasKey("UserId");
+                    b.HasKey("user_Id");
 
                     b.ToTable("User");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceOdds", b =>
                 {
-                    b.HasOne("UtrkePasa.Domain.Entities.Race", "Race")
-                        .WithMany("Odds")
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("UtrkePasa.Domain.Entities.Race", "race")
+                        .WithMany("odds")
+                        .HasForeignKey("race_Id1");
 
-                    b.Navigation("Race");
+                    b.Navigation("race");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Ticket", b =>
                 {
-                    b.HasOne("UtrkePasa.Domain.Entities.Race", "Race")
-                        .WithMany("Tickets")
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("UtrkePasa.Domain.Entities.Race", "race")
+                        .WithMany("tickets")
+                        .HasForeignKey("race_Id1");
 
-                    b.HasOne("UtrkePasa.Domain.Entities.RaceOdds", "RaceOdds")
+                    b.HasOne("UtrkePasa.Domain.Entities.RaceOdds", "race_Odds")
                         .WithMany()
-                        .HasForeignKey("RaceOddsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("race_Odds_Id1");
 
-                    b.HasOne("UtrkePasa.Domain.Entities.User", "User")
-                        .WithMany("Tickets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("UtrkePasa.Domain.Entities.User", "user")
+                        .WithMany("tickets")
+                        .HasForeignKey("user_Id1");
 
-                    b.Navigation("Race");
+                    b.Navigation("race");
 
-                    b.Navigation("RaceOdds");
+                    b.Navigation("race_Odds");
 
-                    b.Navigation("User");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Race", b =>
                 {
-                    b.Navigation("Odds");
+                    b.Navigation("odds");
 
-                    b.Navigation("Tickets");
+                    b.Navigation("tickets");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Tickets");
+                    b.Navigation("tickets");
                 });
 #pragma warning restore 612, 618
         }

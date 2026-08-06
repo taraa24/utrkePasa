@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace UtrkePasa.Infrastructure;
+namespace UtrkePasa.Domain.DataBase;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {

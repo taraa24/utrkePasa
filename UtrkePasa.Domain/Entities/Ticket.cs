@@ -1,19 +1,23 @@
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
 namespace UtrkePasa.Domain.Entities;
 public class Ticket
-{
-    public int TicketId{get; set;}
-    public DateTime PlacedAt{get; set;}
-    public float PaidForTicket{get; set;}
+{   
+    [Key]
+    public int ticket_Id{get; set;}
 
-    public int UserId{get; set;}
-    public User? User{get; set;}
+    
+    public DateTime placed_At{get; set;}
+    public float paid_For_Ticket{get; set;}
 
-    public int RaceId{get; set;}
-    public Race? Race{get; set;}
+    public int user_Id{get; set;}
+    public User? user{get; set;}
 
-    public int RaceOddsId{get; set;}
-    public RaceOdds? RaceOdds{get; set;}
+    public int race_Id{get; set;}
+    public Race? race{get; set;}
+
+    public int race_Odds_Id{get; set;}
+    public RaceOdds? race_Odds{get; set;}
 
 }

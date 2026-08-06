@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Entities;
 
-namespace UtrkePasa.Infrastructure;
+namespace UtrkePasa.Domain.DataBase;
 
 public class AppDbContext : DbContext
 {
