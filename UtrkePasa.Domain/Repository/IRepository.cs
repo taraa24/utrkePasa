@@ -1,8 +1,7 @@
-using System.ComponentModel;
 
-/* namespace UtrkePasa.Domain.Repository
+namespace UtrkePasa.Domain.Repository;
 
-public class IRepository<T> where T : class
+public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(int id);
     Task<IEnumerable<T>> GetAllAsync();
@@ -10,4 +9,4 @@ public class IRepository<T> where T : class
     void Update(T entity);
     void Remove(T entity);
     Task<int> SaveChangesAsync();   
-} */
+}

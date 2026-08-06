@@ -1,22 +1,36 @@
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using UtrkePasa.Infrastructure;
+using UtrkePasa.Api.Services;
+using UtrkePasa.Api.Dtos;
 
 namespace UtrkePasa.Api.Controllers;
 
-public class UserController 
+
+[Route("api/[controller]")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController
+    private readonly IUserService _userService;
+ 
+    public UserController(IUserService userService)
     {
-        private readonly AppDbContext _context;
-
-        public UserController(AppDbContext context)
-        {
-            _context = context;
-        }
+        _userService = userService;
     }
-
+ 
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+        {
+            return BadRequest("Email i lozinka moraju biti upisani");
+        }
+ 
+        var result = await _userService.LoginAsync(request);
+        if (result is null)
+        {
+            return Unauthorized("Pogrešan email ili lozinka");
+        }
+ 
+        return Ok(result);
+    }
 }
