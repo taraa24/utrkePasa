@@ -22,10 +22,12 @@ public class TicketPurchaseController : ControllerBase
     } */
 
     [HttpPost]
-    public async Task PurchaseTIcket(TicketPurchaseRequest request)
+    public async Task<ActionResult<TicketPurchaseResponse>> PurchaseTIcket(TicketPurchaseRequest request)
     {
         /* await ValidateTIcket(o);
         await FiscalizeTicket(o);
         await SaveTicket(o); */
+        var result = await _ticketService.PurchaseTicketAsync(request);
+        return Ok(result);
     }
 }

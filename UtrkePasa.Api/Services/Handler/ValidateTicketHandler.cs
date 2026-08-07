@@ -5,9 +5,9 @@ namespace UtrkePasa.Api.Services.Handler;
 public class ValidateTicketHandler : TicketPurchaseHandler
 {
 
-    
-    public override bool Handle(Ticket ticket)
+    protected override bool Process(Ticket ticket)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("validacija");
+        return true;
     }
 }

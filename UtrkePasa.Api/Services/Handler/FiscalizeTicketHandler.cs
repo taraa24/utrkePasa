@@ -4,8 +4,9 @@ namespace UtrkePasa.Api.Services.Handler;
 
 public class FiscalizeTicketHandler : TicketPurchaseHandler
 {
-    public override bool Handle(Ticket ticket)
+    protected override bool Process(Ticket ticket)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("fiskalizacija");
+        return true;
     }
 }

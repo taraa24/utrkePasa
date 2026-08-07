@@ -4,8 +4,9 @@ namespace UtrkePasa.Api.Services.Handler;
 
 public class SaveTicketToDbHandler : TicketPurchaseHandler
 {
-    public override bool Handle(Ticket ticket)
+    protected override bool Process(Ticket ticket)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("spremanje u bazu");
+        return true;
     }
 }
