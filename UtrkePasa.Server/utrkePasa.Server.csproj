@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-utrkePasa.Server-7ee68ea1-1e2a-4c71-b445-80dd6bf8d416</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UtrkePasa.Domain\UtrkePasa.Domain.csproj" />
+    <ProjectReference Include="..\UtrkePasa.Infrastructure\UtrkePasa.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

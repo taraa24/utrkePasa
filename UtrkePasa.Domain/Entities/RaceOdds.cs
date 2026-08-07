@@ -12,7 +12,5 @@ public class RaceOdds
 
     public int race_Id{get; set;}
     public Race? race {get;set;} // = null!;
-
-
     
 }
