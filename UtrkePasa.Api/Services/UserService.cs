@@ -15,15 +15,15 @@ public class UserService : IUserService
 
     public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
     {
-        var user = await _userRepository.GetByEmailAsync(request.email);
+        var user = await _userRepository.GetByEmailAsync(request.Email);
 
-        if(user is null || user.password != request.password) return null;
+        if(user is null || user.password != request.Password) return null;
 
         return new LoginResponseDto
         {
-            user_Id = user.user_Id,
-            name = user.name,
-            surname = user.surname
+            UserId = user.user_Id,
+            Name = user.name,
+            Surname = user.surname
         };
     }
 }

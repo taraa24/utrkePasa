@@ -1,13 +1,19 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Runtime.ExceptionServices;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using UtrkePasa.Api.Services;
 
 namespace UtrkePasa.Api.Middleware; //middleware se prebacujeu infrastrukturu kada budem imala vise od jednog api-a
 
 public class MyExceptionMiddleware
 {
+
+    private readonly ITicketService _ticketService;
+
+
     public readonly RequestDelegate _next;
 
     public MyExceptionMiddleware(RequestDelegate next)
@@ -21,10 +27,18 @@ public class MyExceptionMiddleware
         {
             await _next(context);
         }
-        catch (Exception ex)
+        catch (ValidationException ex)
         {
             await HandleExceptionAsync(context, ex);
-        }
+
+        }/* catch (FiscalizationException ex)
+        {
+            await HandleExceptionAsync(context,ex);
+
+        }catch(SaveToDbException ex)
+        {
+            await HandleExceptionAsync(context,ex);
+        } */
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)

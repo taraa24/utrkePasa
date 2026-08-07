@@ -4,6 +4,8 @@ using UtrkePasa.Api.Services;
 using UtrkePasa.Domain.Repository;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Api.Middleware;
+using UtrkePasa.Api.Handler;
+
 
 Env.Load("../.env");
 
@@ -22,6 +24,12 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<ITicketService, TicketService>();
+
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IValidationService, ValidateTicketService>();
+builder.Services.AddScoped<IFiscalizeTicketService, FiscalizeTicketService>();
+builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
 

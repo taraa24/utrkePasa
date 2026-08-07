@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UtrkePasa.Api.Dtos;
+using UtrkePasa.Api.Handler;
 using UtrkePasa.Api.Services;
 
 namespace UtrkePasa.Api.Controllers;
@@ -9,11 +10,11 @@ namespace UtrkePasa.Api.Controllers;
 public class TicketPurchaseController : ControllerBase
 {
     
-    private readonly ITicketService _ticketService;
+    private readonly IPayingHandler _payingHandler;
 
-    public TicketPurchaseController(ITicketService ticketService)
+    public TicketPurchaseController(IPayingHandler payingHandler)
     {
-        _ticketService = ticketService;
+        _payingHandler = payingHandler;
     }
 
     /* public TicketPurchaseController(MyUserContext myUserContext)
@@ -22,12 +23,16 @@ public class TicketPurchaseController : ControllerBase
     } */
 
     [HttpPost]
-    public async Task<ActionResult<TicketPurchaseResponse>> PurchaseTIcket(TicketPurchaseRequest request)
+    public async Task<ActionResult> PurchaseTIcket([FromBody]TicketPurchaseRequest request)
     {
+        //await payinHandler.Purchase(request);
         /* await ValidateTIcket(o);
         await FiscalizeTicket(o);
         await SaveTicket(o); */
-        var result = await _ticketService.PurchaseTicketAsync(request);
-        return Ok(result);
+        /* var result = await _ticketService.PurchaseTicketAsync(request);
+        return Ok(result); */
+
+        var ticket = await _payingHandler.HandlePaymentAsync(request);
+        return Ok(ticket);
     }
 }
