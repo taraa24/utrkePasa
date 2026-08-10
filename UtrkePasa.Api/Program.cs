@@ -31,6 +31,8 @@ builder.Services.AddScoped<IValidationService, ValidateTicketService>();
 builder.Services.AddScoped<IFiscalizeTicketService, FiscalizeTicketService>();
 builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 
+builder.Services.AddScoped<IDogRepository,DogRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
