@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-utrkePasa.Server-7ee68ea1-1e2a-4c71-b445-80dd6bf8d416</UserSecretsId>
+    <UserSecretsId>dotnet-UtrkePasa.Server-7ee68ea1-1e2a-4c71-b445-80dd6bf8d416</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

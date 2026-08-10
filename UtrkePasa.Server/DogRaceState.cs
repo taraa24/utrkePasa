@@ -1,6 +1,6 @@
 using UtrkePasa.Domain.Entities;
 
-namespace utrkePasa.Server;
+namespace UtrkePasa.Server;
 
 public class DogRaceState
 {

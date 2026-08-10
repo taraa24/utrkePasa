@@ -1,6 +1,6 @@
 using DotNetEnv;
 using UtrkePasa.Domain.DataBase;
-using utrkePasa.Server;
+using UtrkePasa.Server;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Repository;
 

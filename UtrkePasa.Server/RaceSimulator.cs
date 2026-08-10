@@ -1,10 +1,10 @@
 using UtrkePasa.Domain.Entities;
 
-namespace utrkePasa.Server;
+namespace UtrkePasa.Server;
 
 public class RaceSimulator
 {
-    public const int TrackLength = 100;
+    public const int TrackLength = 600;
     private const int LineupSize = 5;
     private readonly Random _random = new();
 

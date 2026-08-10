@@ -1,7 +1,7 @@
 using UtrkePasa.Domain.Repository;
 using UtrkePasa.Domain.Entities;
 
-namespace utrkePasa.Server;
+namespace UtrkePasa.Server;
 
 public class ServerRace(ILogger<ServerRace> logger, IServiceScopeFactory scopeFactory) : BackgroundService
 {
@@ -14,7 +14,7 @@ public class ServerRace(ILogger<ServerRace> logger, IServiceScopeFactory scopeFa
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var scope = scopeFactory.CreateScope();
+            using var scope = scopeFactory.CreateScope(); // treba ga negdi smjestit a da nije tu
             var dogRepository = scope.ServiceProvider.GetRequiredService<IDogRepository>();
             var allDogs = await dogRepository.GetAllDogsAsync();
 
