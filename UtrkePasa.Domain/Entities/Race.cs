@@ -14,4 +14,6 @@ public class Race
 
     public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
     public ICollection<RaceOdds> odds{get; set;} = new List<RaceOdds>();
+    public ICollection<RaceHistory> raceHistory{get;set;} = new List<RaceHistory>();
+
 }

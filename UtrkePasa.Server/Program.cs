@@ -14,7 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IDogRepository, DogRepository>();
+builder.Services.AddScoped<IRaceRepository, RaceRepository>();
+builder.Services.AddScoped<IRaceHistoryRepository, RaceHistoryRepository>();
 builder.Services.AddHostedService<ServerRace>();
 
 var host = builder.Build();
 host.Run();
+

@@ -7,6 +7,8 @@ public class DogRaceState
     
     public Dog? Dog {get;set;}
 
-    public double Position{get;set;} = 0;
+    public int Position{get;set;} = 0;
+
+    public int Place{get;set;}
 
 }

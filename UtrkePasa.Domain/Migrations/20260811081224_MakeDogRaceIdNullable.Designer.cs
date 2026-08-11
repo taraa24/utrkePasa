@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UtrkePasa.Domain.DataBase;
@@ -11,9 +12,11 @@ using UtrkePasa.Domain.DataBase;
 namespace UtrkePasa.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260811081224_MakeDogRaceIdNullable")]
+    partial class MakeDogRaceIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,10 +37,15 @@ namespace UtrkePasa.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("race_Id")
+                        .HasColumnType("integer");
+
                     b.Property<int>("race_Odds_Id")
                         .HasColumnType("integer");
 
                     b.HasKey("dog_Id");
+
+                    b.HasIndex("race_Id");
 
                     b.HasIndex("race_Odds_Id");
 
@@ -68,35 +76,6 @@ namespace UtrkePasa.Domain.Migrations
                     b.HasKey("race_Id");
 
                     b.ToTable("Race");
-                });
-
-            modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceHistory", b =>
-                {
-                    b.Property<int>("history_Race_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("history_Race_Id"));
-
-                    b.Property<int>("dog_Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("finale_Position")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("is_Winner")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("race_Id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("history_Race_Id");
-
-                    b.HasIndex("dog_Id");
-
-                    b.HasIndex("race_Id");
-
-                    b.ToTable("RaceHistory");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceOdds", b =>
@@ -195,32 +174,19 @@ namespace UtrkePasa.Domain.Migrations
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Dog", b =>
                 {
+                    b.HasOne("UtrkePasa.Domain.Entities.Race", "race")
+                        .WithMany()
+                        .HasForeignKey("race_Id");
+
                     b.HasOne("UtrkePasa.Domain.Entities.RaceOdds", "race_Odds")
                         .WithMany()
                         .HasForeignKey("race_Odds_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("race");
+
                     b.Navigation("race_Odds");
-                });
-
-            modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceHistory", b =>
-                {
-                    b.HasOne("UtrkePasa.Domain.Entities.Dog", "Dog")
-                        .WithMany("raceHistory")
-                        .HasForeignKey("dog_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UtrkePasa.Domain.Entities.Race", "Race")
-                        .WithMany("raceHistory")
-                        .HasForeignKey("race_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dog");
-
-                    b.Navigation("Race");
                 });
 
             modelBuilder.Entity("UtrkePasa.Domain.Entities.RaceOdds", b =>
@@ -259,16 +225,9 @@ namespace UtrkePasa.Domain.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("UtrkePasa.Domain.Entities.Dog", b =>
-                {
-                    b.Navigation("raceHistory");
-                });
-
             modelBuilder.Entity("UtrkePasa.Domain.Entities.Race", b =>
                 {
                     b.Navigation("odds");
-
-                    b.Navigation("raceHistory");
 
                     b.Navigation("tickets");
                 });

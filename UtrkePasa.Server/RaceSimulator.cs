@@ -4,7 +4,7 @@ namespace UtrkePasa.Server;
 
 public class RaceSimulator
 {
-    public const int TrackLength = 600;
+    public const int TrackLength = 100;
     private const int LineupSize = 5;
     private readonly Random _random = new();
 
@@ -39,5 +39,17 @@ public class RaceSimulator
         }
 
         return winner;
+    }
+
+    public List<DogRaceState> GetFinalStandings(List<DogRaceState> states)
+    {
+        var standings = states.OrderByDescending(s=> s.Position).ToList();
+
+        for (int i = 0; i < standings.Count; i++)
+        {
+            standings[i].Place = i + 1;
+        }
+
+        return standings;
     }
 }
