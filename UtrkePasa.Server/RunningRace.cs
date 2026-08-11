@@ -3,7 +3,7 @@ using UtrkePasa.Domain.Repository;
 
 namespace UtrkePasa.Server;
 
-public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simulator, RaceState raceState, ILogger logger)
+public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simulator,  ILogger logger)
 {
     private const int TickIntervalMs = 500;
 

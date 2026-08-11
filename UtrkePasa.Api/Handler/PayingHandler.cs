@@ -20,7 +20,7 @@ public class PayingHandler : IPayingHandler
     }
    
 
-    public async Task<Ticket> HandlePaymentAsync(TicketPurchaseRequest request)
+    public async Task<TicketPurchaseResponse> HandlePaymentAsync(TicketPurchaseRequest request)
     {
         await _validationService.ValidateAsync(request);
         await _fiscalizeTicketService.FiscalizationAsync(request);
@@ -36,6 +36,13 @@ public class PayingHandler : IPayingHandler
         await _ticketRepository.SaveTicketToDbAsync(ticket);
         Console.WriteLine("spremljeno u bazu");
 
-        return ticket;
+        return new TicketPurchaseResponse
+        {
+            UserId = ticket.user_Id,
+            TicketId = ticket.ticket_Id,
+            RaceId = ticket.race_Id,
+            PlacedAt = DateTime.UtcNow,
+            PaidForTicket = ticket.paid_For_Ticket
+        };
     }
 }

@@ -6,7 +6,7 @@ namespace UtrkePasa.Server;
 public class ServerRace(ILogger<ServerRace> logger, IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private static readonly TimeSpan PauseAfterFinish = TimeSpan.FromSeconds(10);
-    private readonly RunningRace _runningRace = new(scopeFactory, new RaceSimulator(), new RaceState(), logger);
+    private readonly RunningRace _runningRace = new(scopeFactory, new RaceSimulator(), logger);
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

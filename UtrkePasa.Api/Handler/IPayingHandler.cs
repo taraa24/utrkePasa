@@ -5,5 +5,5 @@ namespace UtrkePasa.Api.Handler;
 
 public interface IPayingHandler
 {
-Task<Ticket> HandlePaymentAsync(TicketPurchaseRequest request);
+    Task<TicketPurchaseResponse> HandlePaymentAsync(TicketPurchaseRequest request);
 }

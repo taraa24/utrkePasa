@@ -32,6 +32,7 @@ builder.Services.AddScoped<IFiscalizeTicketService, FiscalizeTicketService>();
 builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 
 builder.Services.AddScoped<IDogRepository,DogRepository>();
+builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 
