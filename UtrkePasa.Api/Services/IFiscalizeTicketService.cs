@@ -4,5 +4,5 @@ namespace UtrkePasa.Api.Services;
 
 public interface IFiscalizeTicketService
 {
-    Task FiscalizationAsync(TicketPurchaseRequest request);
+    Task<Result> FiscalizationAsync(TicketPurchaseRequest request);
 }

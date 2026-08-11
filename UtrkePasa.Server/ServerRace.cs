@@ -1,5 +1,3 @@
-using UtrkePasa.Domain.Repository;
-using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Server;
 

@@ -12,8 +12,7 @@ public class Dog
     public int race_Odds_Id{get; set;}
     [ForeignKey(nameof(race_Odds_Id))]
     public RaceOdds? race_Odds{get;set;}
-
+    
     public ICollection<RaceHistory> raceHistory{get;set;} = new List<RaceHistory>();
-
 
 }

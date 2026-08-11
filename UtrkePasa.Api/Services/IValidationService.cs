@@ -4,5 +4,5 @@ namespace UtrkePasa.Api.Services;
 
 public interface IValidationService
 {
-    Task ValidateAsync(TicketPurchaseRequest request);
+    Task<Result> ValidateAsync(TicketPurchaseRequest request);
 }

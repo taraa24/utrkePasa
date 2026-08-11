@@ -1,6 +1,6 @@
 namespace UtrkePasa.Api.Dtos;
 
-public class TicketPurchaseResponse
+public class TicketPurchaseResponse : Result
 {
     public int UserId{get; set;}
     public int RaceId{get;set;}

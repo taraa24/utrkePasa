@@ -22,13 +22,29 @@ public class PayingHandler : IPayingHandler
 
     public async Task<TicketPurchaseResponse> HandlePaymentAsync(TicketPurchaseRequest request)
     {
-        await _validationService.ValidateAsync(request);
-        await _fiscalizeTicketService.FiscalizationAsync(request);
+
+        var validationResult = await _validationService.ValidateAsync(request);
+        if(validationResult.IsFailed)
+
+            return new TicketPurchaseResponse
+            {
+                IsFailed =true,
+                ErrorCode = validationResult.ErrorCode
+            };
+
+        var fiscalizationResult = await _fiscalizeTicketService.FiscalizationAsync(request);
+        if (fiscalizationResult.IsFailed)
+            return new TicketPurchaseResponse
+            {
+                IsFailed = true,
+                ErrorCode = fiscalizationResult.ErrorCode
+            };
+        
 
         var ticket = new Ticket
         {
             user_Id = request.UserId,
-            race_Id = request.RaceId,
+            race_Id = (int)request.RaceId,
             race_Odds_Id = request.RaceOddsId,
             paid_For_Ticket = request.PaidForTicket
         };
@@ -46,3 +62,4 @@ public class PayingHandler : IPayingHandler
         };
     }
 }
+
