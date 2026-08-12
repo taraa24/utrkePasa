@@ -18,6 +18,18 @@ public class RaceSimulator
         }).ToList();
     }
 
+    public List<string> SetStartPlace(List<DogRaceState> raceDogs)
+    {
+        var result = new List<string>();
+
+        for(int i = 1; i < raceDogs.Count; i++)
+        {
+            raceDogs[i].Place = i;
+            result.Add($"{raceDogs[i].Dog?.dog_Name}:{i}");
+        }
+        return result;
+    }
+
     public DogRaceState? Racing(List<DogRaceState> states)
     {
         foreach (var state in states)

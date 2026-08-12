@@ -22,8 +22,7 @@ public class ValidateTicketService : IValidationService
             ? await _raceRepository.GetByIdAsync(request.RaceId.Value)
             : await _raceRepository.GetCurrentActiveRaceAsync();
 
-        //var race = await _raceRepository.GetByIdAsync(request.RaceId);
-
+        
         if(race == null)
         {
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race not found" };
@@ -32,8 +31,7 @@ public class ValidateTicketService : IValidationService
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race finished" };
         }
         request.RaceId = race.race_Id;
-        await Task.Delay(5000);
-        Console.WriteLine("validacija se obradivala 5 sek");
+        Console.WriteLine("validacija se obradivala");
         return new ValidationResult { IsFailed = false, ResolvedRaceId= race.race_Id };;
         
     }

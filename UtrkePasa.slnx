@@ -2,6 +2,7 @@
   <Project Path="UtrkePasa.Api/UtrkePasa.Api.csproj" />
   <Project Path="UtrkePasa.Domain/UtrkePasa.Domain.csproj" />
   <Project Path="UtrkePasa.Infrastructure/UtrkePasa.Infrastructure.csproj" />
+  <Project Path="UtrkePasa.Testing/UtrkePasa.Testing.csproj" />
   <Project Path="UtrkePasa.Tests/UtrkePasa.Tests.csproj" />
   <Project Path="UtrkePasa.Server/UtrkePasa.Server.csproj" />
 </Solution>

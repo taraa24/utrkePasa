@@ -16,16 +16,19 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
 
             var allDogs = await dogRepository.GetAllDogsAsync();
 
+            var states = _simulator.CreateStartingLineup(allDogs);
+            var startingPlaces = _simulator.SetStartPlace(states);
+
             var race = new Race
             {
                 race_Name = "test",
-                start_Of_The_Race = DateTime.UtcNow
+                start_Of_The_Race = DateTime.UtcNow,
+                dog_Starting_Position = startingPlaces
             };
 
             await raceRepository.AddAsync(race);
             await raceRepository.SaveChangesAsync();
 
-            var states = _simulator.CreateStartingLineup(allDogs);
 
 
             logger.LogInformation("U utrci su {Dogs}", string.Join(", ", states.Select(s => s.Dog!.dog_Name)));

@@ -11,7 +11,7 @@ public class Race
     public DateTime start_Of_The_Race{get; set;}
     public DateTime end_Of_The_Race{get; set;}
     public string? result_Of_Race{get; set;} //? = null
-
+    public List<string> dog_Starting_Position{get;set;} = new List<string>();
     public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
     public ICollection<RaceOdds> odds{get; set;} = new List<RaceOdds>();
     public ICollection<RaceHistory> raceHistory{get;set;} = new List<RaceHistory>();

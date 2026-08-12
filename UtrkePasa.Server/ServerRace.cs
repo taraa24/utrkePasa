@@ -7,10 +7,10 @@ public class ServerRace(ILogger<ServerRace> logger, IServiceScopeFactory scopeFa
     private readonly RunningRace _runningRace = new(scopeFactory, new RaceSimulator(), logger);
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        
+    {        
         while (!stoppingToken.IsCancellationRequested)
         {
+            
             await _runningRace.OneRaceAsync(stoppingToken);
 
             logger.LogInformation("pauza prije nove trke je {Seconds}", PauseAfterFinish.TotalSeconds);

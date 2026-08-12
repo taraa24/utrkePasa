@@ -45,6 +45,7 @@ public class PayingHandler : IPayingHandler
         {
             user_Id = request.UserId,
             race_Id = request.RaceId!.Value,
+            placed_At = DateTime.UtcNow,
             race_Odds_Id = request.RaceOddsId,
             paid_For_Ticket = request.PaidForTicket
         };

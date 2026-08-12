@@ -21,11 +21,11 @@ public class MyExceptionMiddleware
         {
             await _next(context);
         }
-        /* catch (ValidationException ex)
+        catch (ValidationException ex)
         {
             _logger.LogWarning(ex, ex.Message);
             await HandleValidationExceptionAsync(context, ex);
-        } */
+        }
         catch (Exception ex)
         {   
             _logger.LogError(ex, ex.Message);
@@ -34,14 +34,14 @@ public class MyExceptionMiddleware
     }
 
 
-   /*  private static Task HandleValidationExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleValidationExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         var response = new { message = "An unexpected error occurred.", details = exception.Message };
         return context.Response.WriteAsync(JsonSerializer.Serialize(response));
-    } */
+    }
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
