@@ -44,7 +44,7 @@ public class PayingHandler : IPayingHandler
         var ticket = new Ticket
         {
             user_Id = request.UserId,
-            race_Id = (int)request.RaceId,
+            race_Id = request.RaceId!.Value,
             race_Odds_Id = request.RaceOddsId,
             paid_For_Ticket = request.PaidForTicket
         };

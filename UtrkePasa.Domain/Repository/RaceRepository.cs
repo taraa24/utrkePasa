@@ -17,6 +17,6 @@ public class RaceRepository : Repository<Race>, IRaceRepository
 
     public async Task<Race?> GetCurrentActiveRaceAsync()
     {
-        return await _dbSet.Include(r => r.odds).Where(r => r.result_Of_Race == null).OrderByDescending(r => r.start_Of_The_Race).FirstOrDefaultAsync();
+        return await _dbSet.Where(r => r.result_Of_Race == null).OrderByDescending(r => r.start_Of_The_Race).FirstOrDefaultAsync();
     }
 }
