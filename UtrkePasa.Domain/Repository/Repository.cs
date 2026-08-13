@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+/* using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.DataBase; 
 namespace UtrkePasa.Domain.Repository;
  
@@ -25,3 +25,4 @@ public class Repository<T> : IRepository<T> where T : class
  
     public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 }
+ */

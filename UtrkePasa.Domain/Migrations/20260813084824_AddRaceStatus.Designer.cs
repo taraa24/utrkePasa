@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UtrkePasa.Domain.DataBase;
@@ -12,9 +13,11 @@ using UtrkePasa.Domain.DataBase;
 namespace UtrkePasa.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260813084824_AddRaceStatus")]
+    partial class AddRaceStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,10 +81,6 @@ namespace UtrkePasa.Domain.Migrations
                     b.Property<string>("ResultOfRace")
                         .HasColumnType("text")
                         .HasColumnName("result_Of_Race");
-
-                    b.Property<DateTimeOffset>("StartOfBetting")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_Of_Betting");
 
                     b.Property<DateTimeOffset>("StartOfTheRace")
                         .HasColumnType("timestamp with time zone")

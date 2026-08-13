@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Domain.Repository;
 
-public interface IRaceRepository : IRepository<Race>
+public interface IRaceRepository 
 {
-    Task<List<Race>> GetByRaceIdAsync(int raceId);
+    Task<Race?> GetByRaceIdAsync(int raceId);
     Task<Race?> GetCurrentActiveRaceAsync();
+    Task<List<Race>> GetPendingRaces();
 }

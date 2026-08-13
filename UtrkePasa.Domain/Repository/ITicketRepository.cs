@@ -2,7 +2,7 @@ using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Domain.Repository;
 
-public interface ITicketRepository : IRepository<Ticket>
+public interface ITicketRepository
 {
     Task SaveTicketToDbAsync(Ticket ticket);
 }

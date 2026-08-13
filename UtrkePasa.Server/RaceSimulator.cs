@@ -22,15 +22,15 @@ public class RaceSimulator
     {
         var result = new List<string>();
 
-        for(int i = 1; i < raceDogs.Count; i++)
+        for(int i = 0; i < raceDogs.Count; i++)
         {
-            raceDogs[i].Place = i;
-            result.Add($"{raceDogs[i].Dog?.dog_Name}:{i}");
+            raceDogs[i].Place = i + 1;
+            result.Add($"{raceDogs[i].Dog?.dog_Name}:{raceDogs[i].Place}");
         }
         return result;
     }
 
-    public DogRaceState? Racing(List<DogRaceState> states)
+    public DogRaceState? Racing(List<DogRaceState> states, Race race)
     {
         foreach (var state in states)
         {
@@ -41,12 +41,9 @@ public class RaceSimulator
 
         foreach (var state in states)
         {
-            if (state.Position >= TrackLength)
+            if (DateTimeOffset.UtcNow > race.EndOfTheRace)
             {
-                if (winner == null || state.Position > winner.Position)
-                {
-                    winner = state;
-                }
+                winner = states.OrderByDescending(s=>s.Position).FirstOrDefault();
             }
         }
 
@@ -63,5 +60,19 @@ public class RaceSimulator
         }
 
         return standings;
+    }
+
+    public Race OpenBetting(Race race)
+    {
+        race.StartOfBetting = DateTimeOffset.UtcNow;
+        race.StartOfTheRace = DateTimeOffset.UtcNow.AddSeconds(_random.Next(20, 40));
+        race.EndOfTheRace = DateTimeOffset.UtcNow.AddMinutes(1.0);
+        race.RaceStatus = "Open";
+
+
+        
+
+        return race;
+        
     }
 }

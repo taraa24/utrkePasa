@@ -4,14 +4,16 @@ using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Domain.Repository;
 
-public class RaceHistoryRepository : Repository<RaceHistory>, IRaceHistoryRepository
+public class RaceHistoryRepository : IRaceHistoryRepository
 {
-    public RaceHistoryRepository(AppDbContext context) : base(context)
+    private readonly AppDbContext _context;
+    public RaceHistoryRepository(AppDbContext context)
     {
+        _context = context;
     }
 
     public async Task AddRangeAsync(List<RaceHistory> history)
     {
-        _dbSet.AddRange(history);
+        _context.AddRange(history);
     }
 }

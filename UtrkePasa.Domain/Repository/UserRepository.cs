@@ -5,14 +5,17 @@ using UtrkePasa.Domain.DataBase;
  
 namespace UtrkePasa.Domain.Repository;
  
-public class UserRepository : Repository<User>, IUserRepository
+public class UserRepository : IUserRepository
 {
-    public UserRepository(AppDbContext context) : base(context)
+    private readonly AppDbContext _context;
+
+    public UserRepository(AppDbContext context)
     {
+        _context = context;
     }
  
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _dbSet.FirstOrDefaultAsync(u => u.email == email);
+        return await _context.User.FirstOrDefaultAsync(u => u.email == email);
     }
 }
