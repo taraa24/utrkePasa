@@ -4,7 +4,6 @@ namespace UtrkePasa.Server;
 
 public class RaceSimulator
 {
-    public const int TrackLength = 100;
     private const int LineupSize = 5;
     private readonly Random _random = new();
 
@@ -30,24 +29,14 @@ public class RaceSimulator
         return result;
     }
 
-    public DogRaceState? Racing(List<DogRaceState> states, Race race)
+    public void Racing(List<DogRaceState> states)
     {
         foreach (var state in states)
         {
             state.Position += _random.Next(1,6);
         }
 
-        DogRaceState? winner = null;
-
-        foreach (var state in states)
-        {
-            if (DateTimeOffset.UtcNow > race.EndOfTheRace)
-            {
-                winner = states.OrderByDescending(s=>s.Position).FirstOrDefault();
-            }
-        }
-
-        return winner;
+    
     }
 
     public List<DogRaceState> GetFinalStandings(List<DogRaceState> states)
@@ -62,17 +51,14 @@ public class RaceSimulator
         return standings;
     }
 
-    public Race OpenBetting(Race race)
+    public void OpenBetting(Race race)
     {
         race.StartOfBetting = DateTimeOffset.UtcNow;
         race.StartOfTheRace = DateTimeOffset.UtcNow.AddSeconds(_random.Next(20, 40));
         race.EndOfTheRace = DateTimeOffset.UtcNow.AddMinutes(1.0);
         race.RaceStatus = "Open";
 
-
-        
-
-        return race;
+        return;
         
     }
 }

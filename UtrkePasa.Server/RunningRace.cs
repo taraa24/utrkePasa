@@ -8,13 +8,12 @@ namespace UtrkePasa.Server;
 
 public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simulator,  ILogger logger)
 {
-    private const int TickIntervalMs = 500;
-    private readonly Random _random = new();
-
     private List<Race> _pendingRaces = new ();
+    private List<Dog> _dogs = new();
+    private List<DogRaceState> _dogRacestates = new();
     private bool _started;
 
-    public async Task<Race> OneRaceAsync(CancellationToken stoppingToken)
+    /* public async Task<Race> OneRaceAsync(CancellationToken stoppingToken)
     {
         using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -56,7 +55,7 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         while (winner == null && !stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(TickIntervalMs, stoppingToken);
-            winner = _simulator.Racing(states, race);
+            _simulator.Racing(race);
         }
 
         //race.EndOfTheRace = DateTime.UtcNow;
@@ -83,10 +82,11 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
 
         return race;
     }
-
-    internal async Task CheckPendingRaces()
+ */
+   /*  internal async Task CheckPendingRaces()
     {
         using var scope = scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var dogRepository = scope.ServiceProvider.GetRequiredService<IDogRepository>();
         var raceRepository = scope.ServiceProvider.GetRequiredService<IRaceRepository>();
 
@@ -105,40 +105,81 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         //TODO: if vrijeme utrke je zavrseno - obradi sve
 
     }
-
+ */
     internal async Task CheckSteps()
     {
         if (_started == false)
             await LoadState();
 
-        await CloseFinishedRaces();
+        
         await OpenNewRaces();
         await OpenForGambling();
         await StartRace();
-        await RunRace();
+        RunRace();
         await FinishRunningRace();
+        await CloseFinishedRaces();
+        
     }
 
     
 
     private async Task FinishRunningRace()
     {
-        throw new NotImplementedException();
+        using var scope = scopeFactory.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var race = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "InProgress");
+
+        if(race == null) return;
+
+        if(DateTimeOffset.UtcNow < race.EndOfTheRace) return;
+        Console.WriteLine("jesan tuuu");
+        var standings = _simulator.GetFinalStandings(_dogRacestates);
+
+        var winner = standings.First();
+
+        race.ResultOfRace = winner.Dog!.dog_Name;
+        race.RaceStatus = "Finished";
+
+        context.Race.Update(race);
+        
+
+        var historyEntries = new List<RaceHistory>();
+
+        for (int i = 0; i < standings.Count; i++)
+        {
+            var state = standings[i];
+            historyEntries.Add(new RaceHistory
+            {
+                race_Id = race.RaceId,
+                dog_Id = state.Dog!.DogId,
+                finale_Position = i + 1,
+                is_Winner = i == 0
+            });
+        }
+
+        await context.RaceHistory.AddRangeAsync(historyEntries);
+        
+        await context.SaveChangesAsync();
+
+        _pendingRaces.Remove(race);
+
+        _dogRacestates.Clear();
+
+        logger.LogInformation("Finishhh");
+        logger.LogInformation("Pobjednik jee {Winner}", race.ResultOfRace);
+
+
     }
     private async Task RunRace()
     {
-        using var scope = scopeFactory.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var race = await context.Race.FirstOrDefaultAsync(r => r.RaceStatus == "InProgress");
+        var race = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "InProgress");
 
         if(race == null)return;
 
-        Console.WriteLine("utrka je zarsila");
         if(race.EndOfTheRace <= DateTimeOffset.UtcNow) return;
-
         
-
+        _simulator.Racing(_dogRacestates);
 
     }
 
@@ -147,17 +188,22 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var race = await context.Race.FirstOrDefaultAsync(r => r.RaceStatus == "Open");
+        var race = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "Open");
 
-        if(DateTimeOffset.UtcNow >= race.StartOfTheRace)
+        if(race == null) return;
+
+        if(DateTimeOffset.UtcNow < race.StartOfTheRace)
         {
-            race.RaceStatus = "InProgress";
-
-            await context.SaveChangesAsync();
-
-            Console.WriteLine("Startt");
-            logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
+            return;
         }
+
+        race.RaceStatus = "InProgress";
+
+        context.Race.Update(race);
+        await context.SaveChangesAsync();
+
+        Console.WriteLine("Startt");
+        logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
     }
 
     private async Task OpenForGambling()
@@ -165,13 +211,13 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var race = await context.Race.FirstOrDefaultAsync(r => r.RaceStatus == "Created");
+        var race = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "Created");
 
         if(race == null) return;
 
-        var afterBettingRace = _simulator.OpenBetting(race);
+        _simulator.OpenBetting(race);
 
-        context.Race.Attach(afterBettingRace);
+        context.Race.Update(race);
 
         await context.SaveChangesAsync();
 
@@ -181,16 +227,18 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
 
     private async ValueTask OpenNewRaces()
     {
+        if(_pendingRaces.Any(r => r.RaceStatus == "Created" || r.RaceStatus == "Open" || r.RaceStatus == "InProgress"))
+        {
+            return;
+        }
 
         using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var dogRepository = scope.ServiceProvider.GetRequiredService<IDogRepository>();
 
 
-        var allDogs = await dogRepository.GetAllDogsAsync();
+        _dogRacestates = _simulator.CreateStartingLineup(_dogs);
+        var startingPlaces = _simulator.SetStartPlace(_dogRacestates);
 
-        var states = _simulator.CreateStartingLineup(allDogs);
-        var startingPlaces = _simulator.SetStartPlace(states);
 
         var race = new Race
         {
@@ -198,7 +246,11 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
             DogStartingPosition = startingPlaces,
             RaceStatus = "Created"
         };
-        
+
+        _pendingRaces.Add(race);
+        context.Race.Add(race);
+        await context.SaveChangesAsync();
+
     }
 
     private async ValueTask CloseFinishedRaces()
@@ -211,21 +263,24 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         {
             if(pr.EndOfTheRace < now)
             {
-                pr.RaceStatus = "Finished";
                 context.Race.Attach(pr);
+                pr.RaceStatus = "Finished";
             }
         }
         await context.SaveChangesAsync();
+        _pendingRaces.RemoveAll(r => r.RaceStatus == "Finished");
     }
 
 
     private async Task LoadState()
     {
         using var scope = scopeFactory.CreateAsyncScope();
-        var raceRepository = scope.ServiceProvider.GetRequiredService<IRaceRepository>();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var _pendingRaces = await raceRepository.GetPendingRaces();
+        _pendingRaces = await context.Race.Where(r => r.RaceStatus != "Finished").ToListAsync();
+        _dogs = await context.Dog.ToListAsync();
+
+
         _started = true;
-        //TODO: ucitaj sve pending utrke iz baze
     }
 }

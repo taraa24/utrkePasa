@@ -17,7 +17,9 @@ public class ServerRace(IServiceScopeFactory scopeFactory,ILogger<ServerRace> lo
             }
             catch
             {
-                
+                logger.LogError(
+                    "Greška u ServerRace"
+                );
             }
             finally
             {
