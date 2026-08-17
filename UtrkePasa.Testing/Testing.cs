@@ -34,8 +34,8 @@ public class Testing
     public static async Task Main(string[] args)
     {
 
-        const int numberOfTickets = 3000;
-        const int maxDegreeOfParallelism = 100;
+        const int numberOfTickets = 20;
+        const int maxDegreeOfParallelism = 2;
 
         using var client = new HttpClient
         {

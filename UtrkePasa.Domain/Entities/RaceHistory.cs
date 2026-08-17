@@ -7,7 +7,8 @@ public class RaceHistory
 {
 
     [Key]
-    public int history_Race_Id{get;set;}
+    [Column("history_Race_Id")]
+    public int HistoryRaceId{get;set;}
 
     public int dog_Id{get;set;}
     [ForeignKey(nameof(dog_Id))]

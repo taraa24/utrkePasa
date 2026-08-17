@@ -19,6 +19,7 @@ builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IRaceHistoryRepository, RaceHistoryRepository>();
 
 builder.Services.AddHostedService<ServerRace>();
+builder.Services.AddHostedService<JobProcessing>();
 
 var host = builder.Build();
 host.Run();
