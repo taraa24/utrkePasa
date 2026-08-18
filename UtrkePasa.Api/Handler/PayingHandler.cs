@@ -43,11 +43,11 @@ public class PayingHandler : IPayingHandler
 
         var ticket = new Ticket
         {
-            user_Id = request.UserId,
-            race_Id = request.RaceId!.Value,
-            placed_At = DateTime.UtcNow,
-            race_Odds_Id = request.RaceOddsId,
-            paid_For_Ticket = request.PaidForTicket
+            UserId = request.UserId,
+            RaceId = request.RaceId!.Value,
+            PlacedAt = DateTimeOffset.UtcNow,
+            RaceOddsId = request.RaceOddsId,
+            PaidForTicket = request.PaidForTicket
         };
 
         await _ticketRepository.SaveTicketToDbAsync(ticket);
@@ -55,11 +55,11 @@ public class PayingHandler : IPayingHandler
 
         return new TicketPurchaseResponse
         {
-            UserId = ticket.user_Id,
-            TicketId = ticket.ticket_Id,
-            RaceId = ticket.race_Id,
-            PlacedAt = DateTime.UtcNow,
-            PaidForTicket = ticket.paid_For_Ticket
+            UserId = ticket.UserId,
+            TicketId = ticket.TicketId,
+            RaceId = ticket.RaceId,
+            PlacedAt = DateTimeOffset.UtcNow,
+            PaidForTicket = ticket.PaidForTicket
         };
     }
 }

@@ -17,13 +17,13 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetByEmailAsync(request.Email);
 
-        if(user is null || user.password != request.Password) return null;
+        if(user is null || user.Password != request.Password) return null;
 
         return new LoginResponseDto
         {
-            UserId = user.user_Id,
-            Name = user.name,
-            Surname = user.surname
+            UserId = user.UserId,
+            Name = user.Name,
+            Surname = user.Surname
         };
     }
 }

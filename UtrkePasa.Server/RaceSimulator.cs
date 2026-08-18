@@ -24,7 +24,7 @@ public class RaceSimulator
         for(int i = 0; i < raceDogs.Count; i++)
         {
             raceDogs[i].Place = i + 1;
-            result.Add($"{raceDogs[i].Dog?.dog_Name}:{raceDogs[i].Place}");
+            result.Add($"{raceDogs[i].Dog?.DogName}:{raceDogs[i].Place}");
         }
         return result;
     }

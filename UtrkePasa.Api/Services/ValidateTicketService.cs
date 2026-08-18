@@ -26,7 +26,7 @@ public class ValidateTicketService : IValidationService
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race not found" };
         }else if(race.EndOfTheRace <= DateTimeOffset.Now)
         {
-            return new ValidationResult { IsFailed = true, ErrorCode = "err: race finished" };
+            return new ValidationResult { IsFailed = true, ErrorCode = "err: race began, time for gambling over" };
         }
         request.RaceId = race.RaceId;
         Console.WriteLine("validacija se obradivala");

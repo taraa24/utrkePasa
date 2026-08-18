@@ -39,7 +39,7 @@ public class TicketProcessing(IServiceScopeFactory scopeFactory, ILogger logger)
         using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        _unprocessedTicketsForThisRace = await context.Ticket.Where(t => t.race_Id == _processingTicket.RaceId).ToListAsync();
+        _unprocessedTicketsForThisRace = await context.Ticket.Where(t => t.RaceId == _processingTicket.RaceId).ToListAsync();
     }
 
     private async Task ProcessTicket()
@@ -50,7 +50,7 @@ public class TicketProcessing(IServiceScopeFactory scopeFactory, ILogger logger)
         foreach (var ticket in _unprocessedTicketsForThisRace)
         {
             Console.WriteLine(
-                $"Ticket ID: {ticket.ticket_Id}, Race ID: {ticket.race_Id}"
+                $"Ticket ID: {ticket.TicketId}, Race ID: {ticket.RaceId}"
             );
         }
 

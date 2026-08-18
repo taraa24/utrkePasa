@@ -10,14 +10,18 @@ public class RaceHistory
     [Column("history_Race_Id")]
     public int HistoryRaceId{get;set;}
 
-    public int dog_Id{get;set;}
-    [ForeignKey(nameof(dog_Id))]
+    [Column("dog_Id")]
+    [ForeignKey(nameof(Dog))]
+    public int DogId{get;set;}
     public Dog? Dog{get;set;}
 
-    public int race_Id{get;set;}
-    [ForeignKey(nameof(race_Id))]
+    [Column("race_Id")]
+    [ForeignKey(nameof(Race))]
+    public int RaceId{get;set;}
     public Race? Race{get;set;}
 
-    public int finale_Position {get;set;}
-    public bool is_Winner{get;set;}
+    [Column("finale_Position")]
+    public int FinalePosition {get;set;}
+    [Column("is_Winner")]
+    public bool IsWinner{get;set;}
 }

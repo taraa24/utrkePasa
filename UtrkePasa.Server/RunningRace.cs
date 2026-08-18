@@ -41,7 +41,7 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
 
         var winner = standings.First();
 
-        race.ResultOfRace = winner.Dog!.dog_Name;
+        race.ResultOfRace = winner.Dog!.DogName;
         race.RaceStatus = "Processing";
 
         context.Race.Update(race);
@@ -54,10 +54,10 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
             var state = standings[i];
             historyEntries.Add(new RaceHistory
             {
-                race_Id = race.RaceId,
-                dog_Id = state.Dog!.DogId,
-                finale_Position = i + 1,
-                is_Winner = i == 0
+                RaceId = race.RaceId,
+                DogId = state.Dog!.DogId,
+                FinalePosition = i + 1,
+                IsWinner = i == 0
             });
         }
 
@@ -65,7 +65,7 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         
         await context.SaveChangesAsync();
 
-        var winnerHistory = historyEntries.First(h => h.is_Winner);
+        var winnerHistory = historyEntries.First(h => h.IsWinner);
         context.ProcessingTicket.Add(new ProcessingTicket
         {
             RaceId = race.RaceId,

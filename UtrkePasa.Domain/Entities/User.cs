@@ -1,18 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UtrkePasa.Domain.Entities;
 
 public class User
 {
     [Key]
-    public int user_Id{get; set;}
+    [Column("user_Id")]
+    public int UserId{get; set;}
 
-    
-    public string name{get; set;} = string.Empty;
-    public string surname{get; set;} = string.Empty;
-    public string email{get; set;} = string.Empty;
-    public string password{get; set;} = string.Empty;
-    public float wallet_State{get; set;}
+    [Column("name")]
+    public string Name{get; set;} = string.Empty;
+
+    [Column("surname")]
+    public string Surname{get; set;} = string.Empty;
+
+    [Column("email")]
+    public string Email{get; set;} = string.Empty;
+
+    [Column("password")]
+    public string Password{get; set;} = string.Empty;
+
+    [Column("wallet_State")]
+    public float WalletState{get; set;}
 
     public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
     

@@ -1,16 +1,22 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UtrkePasa.Domain.Entities;
 public class RaceOdds
 {
     [Key]
-    public int race_Odds_Id{get; set;}
+    [Column("race_Odds_Id")]
+    public int RaceOddsId{get; set;}
 
-    
-    public float odds{get; set;}
-    public string expected_Result{get; set;} = string.Empty;
+    [Column("odds")]
+    public float Odds{get; set;}
 
-    public int race_Id{get; set;}
-    public Race? race {get;set;} // = null!;
+    [Column("expected_Result")]
+    public string ExpectedResult{get; set;} = string.Empty;
+
+    [Column("race_Id")]
+    [ForeignKey(nameof(Race))]
+    public int RaceId{get; set;}
+    public Race? Race {get;set;} // = null!;
     
 }
