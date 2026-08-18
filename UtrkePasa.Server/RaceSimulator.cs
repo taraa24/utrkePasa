@@ -61,4 +61,28 @@ public class RaceSimulator
         return;
         
     }
+
+    public List<DogRaceState> RestoreRaceStates(Race race, List<Dog> dogs)
+    {
+        var states = new List<DogRaceState>();
+
+        foreach (var startingPosition in race.DogStartingPosition)
+        {
+            var parts = startingPosition.Split(':');
+
+            var dogName = parts[0];
+            var startingPlace = int.Parse(parts[1]);
+
+            var dog = dogs.First(d => d.DogName == dogName);
+
+            states.Add(new DogRaceState
+            {
+                Dog = dog,
+                Place = startingPlace,
+                Position = 0
+            });
+        }
+
+        return states;
+    }
 }

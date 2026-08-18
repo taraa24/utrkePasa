@@ -20,7 +20,7 @@ public class ProcessingTicket
     [Column("race_History_Id")]
     [ForeignKey(nameof(RaceHistory))]
     public int RaceHistoryId{get;set;}
-    public RaceHistory? raceHistory{get;set;}
+    public RaceHistory? RaceHistory{get;set;}
 
 
 }

@@ -15,6 +15,12 @@ public class Ticket
     [Column("paid_For_Ticket")]
     public decimal PaidForTicket { get; set; }
 
+    [Column("is_Winning_Ticket")]
+    public bool IsWinningTicket{get;set;}
+
+    [Column("expected_Result")]
+    public string ExpectedResult { get; set; } = string.Empty;
+
     [Column("user_Id")]
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }

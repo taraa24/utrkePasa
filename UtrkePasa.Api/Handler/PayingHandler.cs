@@ -47,7 +47,9 @@ public class PayingHandler : IPayingHandler
             RaceId = request.RaceId!.Value,
             PlacedAt = DateTimeOffset.UtcNow,
             RaceOddsId = request.RaceOddsId,
-            PaidForTicket = request.PaidForTicket
+            PaidForTicket = request.PaidForTicket,
+            ExpectedResult = request.ExpectedResult
+
         };
 
         await _ticketRepository.SaveTicketToDbAsync(ticket);

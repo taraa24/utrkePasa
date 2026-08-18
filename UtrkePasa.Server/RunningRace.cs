@@ -2,11 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Domain.Entities;
+using UtrkePasa.Domain.Enum;
 using UtrkePasa.Domain.Repository;
 
 namespace UtrkePasa.Server;
 
-public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simulator,  ILogger logger)
+public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSingleton _communicationSingleton, RaceSimulator _simulator,  ILogger logger)
 {
     private List<Race> _pendingRaces = new ();
     private List<Dog> _dogs = new();
@@ -75,10 +76,21 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
 
         await context.SaveChangesAsync();
 
+        var job = new JobProcessing
+        {
+            JobType = ProcessingJobType.ProcessTicket,
+            JobStatus = "Pending",
+            RaceId = race.RaceId,
+            RaceHistoryId = winnerHistory.HistoryRaceId
+        };
+
+        _communicationSingleton.AddJob(job);
+
 
         _pendingRaces.Remove(race);
-
         _dogRacestates.Clear();
+
+        
 
         logger.LogInformation("Finishhh");
         logger.LogInformation("Pobjednik jee {Winner}", race.ResultOfRace);
@@ -137,7 +149,7 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         await context.SaveChangesAsync();
 
         logger.LogInformation("mozemmo se kladit");
-
+        logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
     }
 
     private async ValueTask OpenNewRaces()
@@ -177,32 +189,36 @@ public class RunningRace(IServiceScopeFactory scopeFactory, RaceSimulator _simul
         _pendingRaces = await context.Race.Where(r => r.RaceStatus != "Finished").ToListAsync();
         _dogs = await context.Dog.ToListAsync();
 
-        var interruptedRace = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "InProgress" && r.EndOfTheRace <= DateTimeOffset.Now);
-    
-        if (interruptedRace != null)
+
+        var expiredInProgress = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "InProgress" && r.EndOfTheRace <= DateTimeOffset.Now);
+        if (expiredInProgress != null)
         {
-            interruptedRace.RaceStatus = "Canceled";
+            expiredInProgress.RaceStatus = "Canceled";
 
-            await context.SaveChangesAsync();
+            logger.LogWarning("Utrka {RaceId} je istekla tijekom restarta servera", expiredInProgress.RaceId);
 
-            _pendingRaces.Remove(interruptedRace);
+            _pendingRaces.Remove(expiredInProgress);
         }
 
-        var expiredOpen = _pendingRaces
-            .FirstOrDefault(r =>
-                r.RaceStatus == "Open" &&
-                r.EndOfTheRace <= DateTimeOffset.Now);
 
+        var expiredOpen = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "Open" && r.EndOfTheRace <= DateTimeOffset.Now);
         if (expiredOpen != null)
         {
             expiredOpen.RaceStatus = "Canceled";
 
-            logger.LogWarning(
-                "Open utrka {RaceId} je istekla tijekom restarta servera. Otkazana.",
-                expiredOpen.RaceId);
+            logger.LogWarning("Utrka {RaceId} je istekla tijekom restarta servera", expiredOpen.RaceId);
 
             _pendingRaces.Remove(expiredOpen);
         }
+
+
+        var activeRace = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "Open" || r.RaceStatus == "InProgress");
+        if (activeRace != null)
+        {
+            _dogRacestates = _simulator.RestoreRaceStates(activeRace,_dogs);
+        }
+
+        await context.SaveChangesAsync();
 
         _started = true;
     }
