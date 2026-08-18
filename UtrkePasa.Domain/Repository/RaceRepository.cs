@@ -20,7 +20,7 @@ public class RaceRepository : IRaceRepository
 
     public async Task<Race?> GetCurrentActiveRaceAsync()
     {
-        return await _context.Race.Where(r => r.ResultOfRace == null).Where(s => s.RaceStatus == "InProgress").OrderByDescending(r => r.StartOfTheRace).FirstOrDefaultAsync();
+        return await _context.Race.Where(r => r.ResultOfRace == null).Where(s => s.RaceStatus == "Open" || s.RaceStatus == "InProgress").OrderByDescending(r => r.StartOfTheRace).FirstOrDefaultAsync();
     }
 
     public async Task<List<Race>> GetPendingRaces()

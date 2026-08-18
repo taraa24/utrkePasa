@@ -24,7 +24,11 @@ public class ValidateTicketService : IValidationService
         if(race == null)
         {
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race not found" };
-        }else if(race.EndOfTheRace <= DateTimeOffset.Now)
+        }else if (race.EndOfTheRace <= DateTimeOffset.UtcNow)
+        {
+            return new ValidationResult { IsFailed = true, ErrorCode = "err: race finished" };
+        }
+        else if(race.StartOfTheRace <= DateTimeOffset.Now)
         {
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race began, time for gambling over" };
         }
