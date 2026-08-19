@@ -18,7 +18,6 @@ builder.Services.AddSingleton<CommunicationSingleton>();
 
 builder.Services.AddScoped<IDogRepository, DogRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
-builder.Services.AddScoped<IRaceHistoryRepository, RaceHistoryRepository>();
 builder.Services.AddSingleton<JobProcessingHandler>();
 builder.Services.AddSingleton<TicketProcessor>();
 

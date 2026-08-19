@@ -1,8 +1,3 @@
-
-using Microsoft.EntityFrameworkCore;
-using Npgsql.PostgresTypes;
-using UtrkePasa.Domain.DataBase;
-using UtrkePasa.Domain.Entities;
 using UtrkePasa.Domain.Enum;
 
 namespace UtrkePasa.Server;

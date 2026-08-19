@@ -12,11 +12,4 @@ public class Dog
     [Column("dog_Name")]
     public string DogName{get; set;} = string.Empty;
 
-    [Column("race_Odds_Id")]
-    [ForeignKey(nameof(RaceOdds))]
-    public int RaceOddsId{get; set;}
-    public RaceOdds? RaceOdds{get;set;}
-    
-    public ICollection<RaceHistory> RaceHistory{get;set;} = new List<RaceHistory>();
-
 }

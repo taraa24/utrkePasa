@@ -11,7 +11,6 @@ public class JobProcessing
 
     public string JobStatus { get; set; } = "Pending";
     public int RaceId { get; set; }
-    public int RaceHistoryId { get; set; }
-
+    public string winnerOfRace{get;set;} = string.Empty;
 
 }

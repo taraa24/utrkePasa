@@ -24,12 +24,18 @@ public class Race
     public string RaceStatus { get; set; } = string.Empty;//Created, Open, inProgress,Finished,Canceled
     
     [Column("result_Of_Race")]
-    public string? ResultOfRace{get; set;} //? = null
+    public string ResultOfRace{get; set;} = string.Empty; //? = null
 
     [Column("dog_Starting_Position")]
     public List<string> DogStartingPosition{get;set;} = new List<string>();
+    //final position
+
+    [Column("dog_Finale_Position")]
+    public List<string> DogFinalePosition{get;set;} = new List<string>();
+
+
     public ICollection<Ticket> tickets {get; set;} = new List<Ticket>();
     public ICollection<RaceOdds> odds{get; set;} = new List<RaceOdds>();
-    public ICollection<RaceHistory> raceHistory{get;set;} = new List<RaceHistory>();
+
 
 }

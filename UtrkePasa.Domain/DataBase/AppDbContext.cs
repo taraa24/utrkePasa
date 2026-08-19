@@ -14,6 +14,5 @@ public class AppDbContext : DbContext
     public DbSet<Dog> Dog {get;set;}
     public DbSet<Race> Race {get;set;}
     public DbSet<RaceOdds> RaceOdds{get;set;}
-    public DbSet<RaceHistory> RaceHistory{get;set;}
-    public DbSet<ProcessingTicket> ProcessingTicket {get;set;}
+
 }

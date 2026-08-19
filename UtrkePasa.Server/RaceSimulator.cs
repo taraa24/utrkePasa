@@ -51,6 +51,11 @@ public class RaceSimulator
         return standings;
     }
 
+    public List<string> FormatFinalPositions(List<DogRaceState> standings)
+    {
+        return standings.Select(s => $"{s.Dog?.DogName}:{s.Place}").ToList();
+    }
+
     public void OpenBetting(Race race)
     {
         race.StartOfBetting = DateTimeOffset.UtcNow;

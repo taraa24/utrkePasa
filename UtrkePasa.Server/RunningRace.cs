@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Domain.Entities;
 using UtrkePasa.Domain.Enum;
-using UtrkePasa.Domain.Repository;
 
 namespace UtrkePasa.Server;
 
@@ -44,44 +42,19 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
 
         race.ResultOfRace = winner.Dog!.DogName;
         race.RaceStatus = "Processing";
+        race.DogFinalePosition = _simulator.FormatFinalPositions(standings);
 
         context.Race.Update(race);
         
-
-        var historyEntries = new List<RaceHistory>();
-
-        for (int i = 0; i < standings.Count; i++)
-        {
-            var state = standings[i];
-            historyEntries.Add(new RaceHistory
-            {
-                RaceId = race.RaceId,
-                DogId = state.Dog!.DogId,
-                FinalePosition = i + 1,
-                IsWinner = i == 0
-            });
-        }
-
-        await context.RaceHistory.AddRangeAsync(historyEntries);
-        
         await context.SaveChangesAsync();
 
-        var winnerHistory = historyEntries.First(h => h.IsWinner);
-        context.ProcessingTicket.Add(new ProcessingTicket
-        {
-            RaceId = race.RaceId,
-            RaceHistoryId = winnerHistory.HistoryRaceId,
-            ProcessingTicketStatus = "Pending"
-        });
-
-        await context.SaveChangesAsync();
 
         var job = new JobProcessing
         {
             JobType = ProcessingJobType.ProcessTicket,
             JobStatus = "Pending",
             RaceId = race.RaceId,
-            RaceHistoryId = winnerHistory.HistoryRaceId
+            winnerOfRace = race.ResultOfRace
         };
 
         _communicationSingleton.AddJob(job);

@@ -13,8 +13,8 @@ using UtrkePasa.Domain.DataBase;
 namespace UtrkePasa.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260818132754_AddExpectedResultToTicket")]
-    partial class AddExpectedResultToTicket
+    [Migration("20260819080537_CheckPendingChanges")]
+    partial class CheckPendingChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

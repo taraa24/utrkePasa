@@ -8,11 +8,11 @@ public class RaceOdds
     [Column("race_Odds_Id")]
     public int RaceOddsId{get; set;}
 
-    [Column("odds")]
-    public float Odds{get; set;}
+    [Column("odd")]
+    public float Odd{get; set;}
 
-    [Column("expected_Result")]
-    public string ExpectedResult{get; set;} = string.Empty;
+    [Column("odd_Type")]
+    public string oddType{get;set;} = string.Empty;
 
     [Column("race_Id")]
     [ForeignKey(nameof(Race))]

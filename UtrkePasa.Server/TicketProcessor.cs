@@ -10,8 +10,7 @@ public class TicketProcessor(IServiceScopeFactory scopeFactory, ILogger<TicketPr
     internal async Task Process(JobProcessing job)
     {        
         var _unprocessedTicketsForThisRace = await LoadTickets(job);
-        var raceHistory = await LoadWinner(job.RaceHistoryId);
-        await ProcessTicket(_unprocessedTicketsForThisRace, raceHistory);
+        await ProcessTicket(_unprocessedTicketsForThisRace, job.winnerOfRace);
     }
 
 
@@ -25,21 +24,12 @@ public class TicketProcessor(IServiceScopeFactory scopeFactory, ILogger<TicketPr
         
     }
 
-    private async Task<RaceHistory?> LoadWinner(int raceHistoryId)
-    {
-        using var scope = scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        return await context.RaceHistory.FirstOrDefaultAsync(rh => rh.HistoryRaceId == raceHistoryId);
-    }
-
-
-    private async Task ProcessTicket(List<Ticket> _unprocessedTicketsForThisRace, RaceHistory raceHistory)
+    private async Task ProcessTicket(List<Ticket> _unprocessedTicketsForThisRace, string winner)
     {
 
         foreach (var ticket in _unprocessedTicketsForThisRace)
         {
-            ticket.IsWinningTicket = ticket.RaceOdds!.ExpectedResult == raceHistory.Dog!.DogName;
+            ticket.IsWinningTicket = ticket.ExpectedResult == winner;
             Console.WriteLine(
                $"Ticket {ticket.TicketId}: " +
                 $"{(ticket.IsWinningTicket ? "DOBITAN" : "NIJE DOBITAN")}"
