@@ -20,6 +20,7 @@ builder.Services.AddScoped<IDogRepository, DogRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddSingleton<JobProcessingHandler>();
 builder.Services.AddSingleton<TicketProcessor>();
+builder.Services.AddSingleton<FiscalizeClosedRace>();
 
 builder.Services.AddHostedService<ServerRace>();
 builder.Services.AddHostedService<JobProcessingServer>();

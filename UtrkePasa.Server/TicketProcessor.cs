@@ -10,7 +10,7 @@ public class TicketProcessor(IServiceScopeFactory scopeFactory, ILogger<TicketPr
     internal async Task Process(JobProcessing job)
     {        
         var _unprocessedTicketsForThisRace = await LoadTickets(job);
-        await ProcessTicket(_unprocessedTicketsForThisRace, job.winnerOfRace);
+        await ProcessTicket(_unprocessedTicketsForThisRace, job);
     }
 
 
@@ -24,17 +24,25 @@ public class TicketProcessor(IServiceScopeFactory scopeFactory, ILogger<TicketPr
         
     }
 
-    private async Task ProcessTicket(List<Ticket> _unprocessedTicketsForThisRace, string winner)
+    private async Task ProcessTicket(List<Ticket> _unprocessedTicketsForThisRace, JobProcessing job)
     {
+        using var scope = scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         foreach (var ticket in _unprocessedTicketsForThisRace)
         {
-            ticket.IsWinningTicket = ticket.ExpectedResult == winner;
+            ticket.IsWinningTicket = ticket.ExpectedResult == job.winnerOfRace;
             Console.WriteLine(
                $"Ticket {ticket.TicketId}: " +
                 $"{(ticket.IsWinningTicket ? "DOBITAN" : "NIJE DOBITAN")}"
             );
         }
+
+        var race = await context.Race.FirstOrDefaultAsync(r => r.RaceId == job.RaceId);
+        if(race == null) 
+            race?.RaceStatus = "Finished";
+
+        await context.SaveChangesAsync();
 
         Console.WriteLine("procesiranje...");
 

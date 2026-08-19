@@ -45,10 +45,6 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
         race.DogFinalePosition = _simulator.FormatFinalPositions(standings);
 
         context.Race.Update(race);
-        
-        await context.SaveChangesAsync();
-
-
         var job = new JobProcessing
         {
             JobType = ProcessingJobType.ProcessTicket,
@@ -57,7 +53,17 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
             winnerOfRace = race.ResultOfRace
         };
 
-        _communicationSingleton.AddJob(job);
+        var FiscalizeJob = new JobProcessing
+        {
+            JobType = ProcessingJobType.FiscalizeClosedRace,
+            JobStatus = "Pending",
+            RaceId = race.RaceId,
+            winnerOfRace = race.ResultOfRace
+        };
+
+        await context.SaveChangesAsync();
+        await _communicationSingleton.AddJob(job);
+        await _communicationSingleton.AddJob(FiscalizeJob);
 
 
         _pendingRaces.Remove(race);
@@ -161,6 +167,21 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
 
         _pendingRaces = await context.Race.Where(r => r.RaceStatus != "Finished").ToListAsync();
         _dogs = await context.Dog.ToListAsync();
+
+        var stuckRaces = _pendingRaces.Where(r => r.RaceStatus == "Processing").ToList();
+
+        foreach(var race in stuckRaces)
+        {
+            await _communicationSingleton.AddJob(new JobProcessing
+            {
+                JobType = ProcessingJobType.ProcessTicket,
+                JobStatus = "Pending",
+                RaceId = race.RaceId,
+                winnerOfRace = race.ResultOfRace
+            });
+
+            _pendingRaces.Remove(race);
+        }
 
 
         var expiredInProgress = _pendingRaces.FirstOrDefault(r => r.RaceStatus == "InProgress" && r.EndOfTheRace <= DateTimeOffset.Now);

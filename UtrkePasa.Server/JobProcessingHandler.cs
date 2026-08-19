@@ -2,26 +2,20 @@ using UtrkePasa.Domain.Enum;
 
 namespace UtrkePasa.Server;
 
-public class JobProcessingHandler(IServiceScopeFactory scopeFactory, CommunicationSingleton _communicationSingleton, TicketProcessor _ticketProcessor, ILogger<JobProcessingHandler> logger)
+public class JobProcessingHandler(IServiceScopeFactory scopeFactory, CommunicationSingleton _communicationSingleton, TicketProcessor _ticketProcessor, FiscalizeClosedRace _fiscalizeClosedRace, ILogger<JobProcessingHandler> logger)
 {
 
-    internal async Task CheckSteps()
+    internal async Task CheckSteps(CancellationToken stoppingToken)
     {
-        var job = _communicationSingleton.FetchJob();
 
-        if(job == null) return;
-
-        logger.LogInformation("posa:{JobId} tipa {JobType} u utrci {RaceId}", job.ProcessingJobId, job.JobType, job.RaceId);
-
-        switch (job.JobType)
+        await foreach(var job in _communicationSingleton.ReadJobsAsync(stoppingToken))
         {
-            case ProcessingJobType.ProcessTicket:
+            if(job.JobType == ProcessingJobType.ProcessTicket)
                 await _ticketProcessor.Process(job);
-                break;
-
-            case ProcessingJobType.OtheJobs:
+            else if(job.JobType == ProcessingJobType.FiscalizeClosedRace)
+                await _fiscalizeClosedRace.Process(job);
+            else if(job.JobType == ProcessingJobType.OtheJobs)
                 Console.WriteLine("nepoznat posao");
-                break;
         }
         
     }

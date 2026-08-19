@@ -8,7 +8,7 @@ public class JobProcessingServer(IServiceScopeFactory scopeFactory,  JobProcessi
         {
             try 
             {
-                await _jobProcessingHandler.CheckSteps();                
+                await _jobProcessingHandler.CheckSteps(stoppingToken);                
             }
             catch(Exception ex)
             {
