@@ -5,13 +5,16 @@ using UtrkePasa.Domain.Enum;
 
 namespace UtrkePasa.Server;
 
-public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSingleton _communicationSingleton, RaceSimulator _simulator,  ILogger logger)
+public class RunningRace(IServiceScopeFactory scopeFactory, MessageBus _messageBus, RaceSimulator _simulator,  
+ILogger logger) 
 {
     private List<Race> _pendingRaces = new ();
     private List<Dog> _dogs = new();
     private List<DogRaceState> _dogRacestates = new();
+
     private bool _started;
 
+    
     internal async Task CheckSteps()
     {
         if (_started == false)
@@ -45,25 +48,28 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
         race.DogFinalePosition = _simulator.FormatFinalPositions(standings);
 
         context.Race.Update(race);
+
         var job = new JobProcessing
         {
-            JobType = ProcessingJobType.ProcessTicket,
+            JobType = ProcessingJobType.RaceFinished,
             JobStatus = "Pending",
             RaceId = race.RaceId,
             winnerOfRace = race.ResultOfRace
         };
 
-        var FiscalizeJob = new JobProcessing
+        /* var FiscalizeJob = new JobProcessing
         {
             JobType = ProcessingJobType.FiscalizeClosedRace,
             JobStatus = "Pending",
             RaceId = race.RaceId,
             winnerOfRace = race.ResultOfRace
-        };
+        }; */
 
         await context.SaveChangesAsync();
-        await _communicationSingleton.AddJob(job);
-        await _communicationSingleton.AddJob(FiscalizeJob);
+        //await _communicationSingleton.AddJob(job);  
+        //await _communicationSingleton.AddJob(FiscalizeJob);
+
+        await _messageBus.Publish(job);
 
 
         _pendingRaces.Remove(race);
@@ -172,9 +178,9 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
 
         foreach(var race in stuckRaces)
         {
-            await _communicationSingleton.AddJob(new JobProcessing
+            await _messageBus.Publish(new JobProcessing
             {
-                JobType = ProcessingJobType.ProcessTicket,
+                JobType = ProcessingJobType.RaceFinished,
                 JobStatus = "Pending",
                 RaceId = race.RaceId,
                 winnerOfRace = race.ResultOfRace
@@ -216,4 +222,6 @@ public class RunningRace(IServiceScopeFactory scopeFactory, CommunicationSinglet
 
         _started = true;
     }
+
+    
 }

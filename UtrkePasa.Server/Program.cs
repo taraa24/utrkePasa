@@ -14,17 +14,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 
-builder.Services.AddSingleton<CommunicationSingleton>();
-
+/* builder.Services.AddSingleton<CommunicationSingleton>();
+ */
 builder.Services.AddScoped<IDogRepository, DogRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
-builder.Services.AddSingleton<JobProcessingHandler>();
-builder.Services.AddSingleton<TicketProcessor>();
+/* builder.Services.AddSingleton<JobProcessingHandler>();
+ */builder.Services.AddSingleton<TicketProcessor>();
 builder.Services.AddSingleton<FiscalizeClosedRace>();
+builder.Services.AddSingleton<MessageBus>();
+
 
 builder.Services.AddHostedService<ServerRace>();
-builder.Services.AddHostedService<JobProcessingServer>();
-
+/* builder.Services.AddHostedService<JobProcessingServer>();
+ */
 var host = builder.Build();
+
+host.Services.GetRequiredService<TicketProcessor>();
+host.Services.GetRequiredService<FiscalizeClosedRace>();
+
 host.Run();
 

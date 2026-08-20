@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+/* using System.Collections.Concurrent;
 using System.Threading.Channels;
 
 namespace UtrkePasa.Server;
@@ -10,7 +10,7 @@ public class CommunicationSingleton
     //private Guid _test = Guid.NewGuid(); 
 
     private readonly Channel<JobProcessing> _channel = Channel.CreateUnbounded<JobProcessing>();
-    private ConcurrentQueue<JobProcessing> _queue = new ConcurrentQueue<JobProcessing>();
+    //private ConcurrentQueue<JobProcessing> _queue = new ConcurrentQueue<JobProcessing>();
     public async Task AddJob(JobProcessing job)
     {
 
@@ -34,4 +34,4 @@ public class CommunicationSingleton
         }
         return null;
     }
-}
+} */

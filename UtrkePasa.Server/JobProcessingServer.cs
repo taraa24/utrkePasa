@@ -1,4 +1,4 @@
-namespace UtrkePasa.Server;
+/* namespace UtrkePasa.Server;
 
 public class JobProcessingServer(IServiceScopeFactory scopeFactory,  JobProcessingHandler _jobProcessingHandler, ILogger<JobProcessingServer> logger) : BackgroundService
 {
@@ -22,4 +22,4 @@ public class JobProcessingServer(IServiceScopeFactory scopeFactory,  JobProcessi
             }
         }
     }
-}
+} */

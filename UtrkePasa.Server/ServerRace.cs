@@ -1,11 +1,12 @@
 namespace UtrkePasa.Server;
 
-public class ServerRace(IServiceScopeFactory scopeFactory, CommunicationSingleton _communicationSingleton, ILogger<ServerRace> logger) : BackgroundService
+public class ServerRace(IServiceScopeFactory scopeFactory ,MessageBus _messageBus, ILogger<ServerRace> logger) : BackgroundService
 {
-    private readonly RunningRace _runningRace = new(scopeFactory, _communicationSingleton, new RaceSimulator(), logger);
+    private readonly RunningRace _runningRace = new(scopeFactory,_messageBus, new RaceSimulator(), logger);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {        
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try 

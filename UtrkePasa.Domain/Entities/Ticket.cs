@@ -16,7 +16,7 @@ public class Ticket
     public decimal PaidForTicket { get; set; }
 
     [Column("is_Winning_Ticket")]
-    public bool IsWinningTicket{get;set;}
+    public bool? IsWinningTicket{get;set;}
 
     [Column("expected_Result")]
     public string ExpectedResult { get; set; } = string.Empty;
