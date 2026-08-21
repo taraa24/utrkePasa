@@ -33,7 +33,10 @@ builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 builder.Services.AddScoped<IDogRepository,DogRepository>();
 builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
-builder.Services.AddSingleton<RaceStateStore>();
+builder.Services.AddSingleton<CurrRaceState>();
+
+builder.Services.AddHostedService<RaceSubscriber>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -50,8 +53,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
-
-app.MapHub<RaceHub>("/raceHub");
 
 app.UseMiddleware<MyExceptionMiddleware>();
 

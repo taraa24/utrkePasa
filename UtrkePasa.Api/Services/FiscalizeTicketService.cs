@@ -1,5 +1,4 @@
 using UtrkePasa.Api.Dtos;
-using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Api.Services;
 

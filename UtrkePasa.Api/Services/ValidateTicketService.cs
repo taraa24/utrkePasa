@@ -7,11 +7,11 @@ namespace UtrkePasa.Api.Services;
 
 public class ValidateTicketService : IValidationService
 {
-    private readonly RaceStateStore _raceStateStore;
+    private readonly CurrRaceState _currRaceState;
 
-    public ValidateTicketService(RaceStateStore raceStateStore)
+    public ValidateTicketService(CurrRaceState currRaceState)
     {
-        _raceStateStore = raceStateStore;
+        _currRaceState = currRaceState;
     }
     /* private readonly IRaceRepository _raceRepository;
 
@@ -21,8 +21,7 @@ public class ValidateTicketService : IValidationService
     } */
     public async Task<Result> ValidateAsync(TicketPurchaseRequest request)
     {
-
-        var race = _raceStateStore.GetActivRace();
+        var race = _currRaceState.GetCurrRace();
 
         /* var race = request.RaceId.HasValue
             ? await _raceRepository.GetByRaceIdAsync(request.RaceId.Value)

@@ -3,10 +3,11 @@ using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Server;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Repository;
+using System.Net;
 
 Env.Load("../.env");
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?.Replace("{DB_PASSWORD}", Environment.GetEnvironmentVariable("DB_PASSWORD"));
@@ -24,14 +25,21 @@ builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddSingleton<FiscalizeClosedRace>();
 builder.Services.AddSingleton<MessageBus>();
 
-
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<RacePublisher>();
 builder.Services.AddHostedService<ServerRace>();
 /* builder.Services.AddHostedService<JobProcessingServer>();
  */
-var host = builder.Build();
+var app = builder.Build();
 
-host.Services.GetRequiredService<TicketProcessor>();
-host.Services.GetRequiredService<FiscalizeClosedRace>();
+app.Services.GetRequiredService<TicketProcessor>();
+app.Services.GetRequiredService<FiscalizeClosedRace>();
 
-host.Run();
+
+
+app.MapHub<RaceHub>("/raceHub");
+
+app.Run();
+
+
 

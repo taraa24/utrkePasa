@@ -1,44 +1,14 @@
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace UtrkePasa.Server;
 
-public class ServerRace : BackgroundService
+public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus,
+    ILogger<ServerRace> logger,RacePublisher racePublisher) : BackgroundService
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly MessageBus _messageBus;
-    private readonly ILogger<ServerRace> _logger;
-    private readonly HubConnection _connection;
 
-    private readonly RunningRace _runningRace;
-
-    public ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus, ILogger<ServerRace> logger)
-    {
-        _scopeFactory = scopeFactory;
-        _messageBus = messageBus;
-        _logger = logger;
-
-        _connection = new HubConnectionBuilder().WithUrl("http://localhost:5057/raceHub").WithAutomaticReconnect().Build();
-
-        _runningRace = new RunningRace(scopeFactory,messageBus, new RaceSimulator(), logger, _connection);
-    }
+    private readonly RunningRace _runningRace = new(scopeFactory, messageBus, new RaceSimulator(), logger, racePublisher);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {        
-
-        try
-        {
-            await _connection.StartAsync(stoppingToken);
-
-            _logger.LogInformation("Spojenooo");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(
-                ex,
-                "Nije se moguće spojiti na SignalR API");
-            
-            return;
-        }
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -48,7 +18,7 @@ public class ServerRace : BackgroundService
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex,
+                logger.LogError(ex,
                     "Greška u ServerRace"
                 );
             }
