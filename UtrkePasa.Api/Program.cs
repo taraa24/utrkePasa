@@ -5,6 +5,7 @@ using UtrkePasa.Domain.Repository;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Api.Middleware;
 using UtrkePasa.Api.Handler;
+using UtrkePasa.Api;
 
 
 Env.Load("../.env");
@@ -32,7 +33,12 @@ builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 builder.Services.AddScoped<IDogRepository,DogRepository>();
 builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
+builder.Services.AddSingleton<RaceStateStore>();
+
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -45,7 +51,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
 
-app.UseMiddleware<MyExceptionMiddleware>();
+app.MapHub<RaceHub>("/raceHub");
 
+app.UseMiddleware<MyExceptionMiddleware>();
 
 app.Run();

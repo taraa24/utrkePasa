@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Domain.Entities;
@@ -6,7 +7,7 @@ using UtrkePasa.Domain.Enum;
 namespace UtrkePasa.Server;
 
 public class RunningRace(IServiceScopeFactory scopeFactory, MessageBus _messageBus, RaceSimulator _simulator,  
-ILogger logger) 
+ILogger logger, HubConnection _connection) 
 {
     private List<Race> _pendingRaces = new ();
     private List<Dog> _dogs = new();
@@ -114,6 +115,7 @@ ILogger logger)
         context.Race.Update(race);
         await context.SaveChangesAsync();
 
+
         Console.WriteLine("Startt");
         logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
     }
@@ -132,6 +134,8 @@ ILogger logger)
         context.Race.Update(race);
 
         await context.SaveChangesAsync();
+
+        await _connection.SendAsync("UpdateRace", race); 
 
         logger.LogInformation("mozemmo se kladit");
         logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));

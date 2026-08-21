@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Repository;
 
 Env.Load("../.env");
+
 var builder = Host.CreateApplicationBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

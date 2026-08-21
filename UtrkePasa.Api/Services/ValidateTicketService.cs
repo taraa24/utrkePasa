@@ -7,18 +7,26 @@ namespace UtrkePasa.Api.Services;
 
 public class ValidateTicketService : IValidationService
 {
+    private readonly RaceStateStore _raceStateStore;
 
-    private readonly IRaceRepository _raceRepository;
+    public ValidateTicketService(RaceStateStore raceStateStore)
+    {
+        _raceStateStore = raceStateStore;
+    }
+    /* private readonly IRaceRepository _raceRepository;
 
     public ValidateTicketService(IRaceRepository raceRepository)
     {
         _raceRepository = raceRepository;
-    }
+    } */
     public async Task<Result> ValidateAsync(TicketPurchaseRequest request)
     {
-        var race = request.RaceId.HasValue
+
+        var race = _raceStateStore.GetActivRace();
+
+        /* var race = request.RaceId.HasValue
             ? await _raceRepository.GetByRaceIdAsync(request.RaceId.Value)
-            : await _raceRepository.GetCurrentActiveRaceAsync();
+            : await _raceRepository.GetCurrentActiveRaceAsync(); */
 
         
         if(race == null)
