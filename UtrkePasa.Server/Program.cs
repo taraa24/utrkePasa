@@ -13,21 +13,11 @@ Env.Load("../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-var applicationUrl = builder.Configuration["urls"];
-
-if (string.IsNullOrEmpty(applicationUrl))
-    throw new InvalidOperationException("Application URL nije postavljen.");
-
-var port = new Uri(applicationUrl).Port;
-
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?.Replace("{DB_PASSWORD}", Environment.GetEnvironmentVariable("DB_PASSWORD"));
 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseNpgsql(connectionString));
-
 
 /* builder.Services.AddSingleton<CommunicationSingleton>();
  */
@@ -40,27 +30,10 @@ builder.Services.AddSingleton<MessageBus>();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RacePublisher>();
+builder.Services.AddSingleton<IRunningPort,RunningPort>();
 builder.Services.AddHostedService<ServerRace>();
 
-public class RunningPort : IRunningPort
-{
-    private IServer _servicer;
-
-    public RunningPort(IServer servicer)
-    {
-        _servicer = servicer;
-    }
-
-    public int GetPort ()
-    {
-        var addresses = _servicer.Features.Get<ServerAddressesFeature>();
-        var first = addresses?.Addresses.FirstOrDefault();
-        return int.Parse(first.Split(':')[1]);
-    }
-} 
-
-
-builder.Services.AddSingleton<ServiceDiscovery>(builder.get, );
+builder.Services.AddSingleton<ServiceDiscovery>();
 
 
 builder.Services.AddHostedService(sp =>
@@ -69,7 +42,7 @@ builder.Services.AddHostedService(sp =>
 /* builder.Services.AddHostedService<JobProcessingServer>();
  */
 
-
+builder.Services.Configure<ServiceDiscoveryConfiguration>(builder.Configuration.GetSection("ServiceDiscoveryConfiguration"));
 var app = builder.Build();
 app.Services.GetRequiredService<TicketProcessor>();
 app.Services.GetRequiredService<FiscalizeClosedRace>();

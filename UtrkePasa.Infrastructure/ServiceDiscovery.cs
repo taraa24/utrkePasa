@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Domain.Entities;
 
@@ -13,9 +14,17 @@ public interface IRunningPort
     int GetPort();
 }
 
-public class ServiceDiscovery(IServiceScopeFactory scopeFactory, IRunningPort runningPort) : BackgroundService
+public class ServiceDiscovery(
+    IServiceScopeFactory scopeFactory, 
+    IRunningPort runningPort,
+    IOptions<ServiceDiscoveryConfiguration> configuration) : BackgroundService
 {
+    private readonly IRunningPort _runningPort = runningPort;
+    private readonly IOptions<ServiceDiscoveryConfiguration> _configuration = configuration;
     private Guid _appGuid;
+    public bool IAmTheLeader { get;private set; }
+    private string _appName;
+
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -48,7 +57,7 @@ public class ServiceDiscovery(IServiceScopeFactory scopeFactory, IRunningPort ru
     {
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
+        _appName = applicationName;
         _appGuid  = Guid.NewGuid();
 
         //var leaderExist = await context.Register.AnyAsync(r => r.isLeader && r.timestamp != null); 
@@ -60,7 +69,7 @@ public class ServiceDiscovery(IServiceScopeFactory scopeFactory, IRunningPort ru
             ipAddr = GetLocalIpAddr(),
             timestamp = DateTimeOffset.UtcNow,
             isLeader = false,
-            port = port
+            port = _runningPort.GetPort()
         };
 
         context.Register.Add(registar);
@@ -118,40 +127,46 @@ public class ServiceDiscovery(IServiceScopeFactory scopeFactory, IRunningPort ru
 
     public async Task UpdateLeader()
     {
-        //if i am the leader ; return;
-
+        if (IAmTheLeader)
+            return;
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var me = await context.Register.FirstOrDefaultAsync(r => r.appGuid == _appGuid);
-
-        if(me == null || me.isLeader) return;
-
         var timeout = DateTimeOffset.UtcNow.AddSeconds(-10);
+        var leaderExist = await context.Register.SingleOrDefaultAsync(leader => leader.appName == _appName && leader.isLeader && leader.timestamp != null && leader.timestamp > timeout);
+        if (leaderExist  == null) return;
 
-        var leaderExist = await context.Register.AnyAsync(leader => leader.appName == me.appName && leader.isLeader && leader.timestamp != null && leader.timestamp > timeout);
-
-        var updated = await context.Register.Where(r => r.appGuid == me.appGuid && r.appName == me.appName &&  !leaderExist)
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(r => r.isLeader, true)); //set leader = true, where heartbeat missed x2 and appname == _appname and uuid == moj uuid
-
-        //if updatd == 1 then i am the leader!
-
-
-        /* var registar = await context.Register.FirstOrDefaultAsync(r => r.appGuid == _appGuid);
-
-        if(registar == null) return;
-
-        var leaderExist = await context.Register.FirstOrDefaultAsync(r => r.isLeader && r.timestamp != null);
-
-        if(leaderExist == null)
-        {
-            registar.isLeader = true;
-            await context.SaveChangesAsync();
-        } */
-
-        
+        await CleanLeadership(context, leaderExist);
+        await ClaimLeadership(context);
     }
 
+    private async Task CleanLeadership(AppDbContext context, Register leaderExist)
+    {
+        await context.Register
+            .Where(r => r.appName == _appName && r.isLeader == true && r.appGuid == leaderExist.appGuid)
+            .ExecuteUpdateAsync(setters =>
+                setters.SetProperty(r => r.isLeader, false));
+    }
+
+    private async Task ClaimLeadership(AppDbContext context)
+    {
+        try
+        {
+            var updated = await context.Register
+                .Where(r => r.appGuid == _appGuid && r.appName == _appName)
+                .ExecuteUpdateAsync(setters =>
+                    setters.SetProperty(r => r.isLeader,
+                        true)); //set leader = true, where heartbeat missed x2 and appname == _appname and uuid == moj uuid
+
+            if (updated == 1)
+                IAmTheLeader = true;
+        }
+        catch (Exception e)
+        {
+            
+        }
+        
+    }
 
     public async Task<Register?> GetLeaderAsync()
     {
@@ -160,5 +175,9 @@ public class ServiceDiscovery(IServiceScopeFactory scopeFactory, IRunningPort ru
 
         return await context.Register.Where(r => r.isLeader && r.timestamp != null).FirstOrDefaultAsync();
     }
+}
 
+public class ServiceDiscoveryConfiguration
+{
+    public bool Singleton { get; set; }
 }

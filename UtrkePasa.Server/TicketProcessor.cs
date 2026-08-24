@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Domain.Enum;
+using UtrkePasa.Infrastructure;
 
 namespace UtrkePasa.Server;
 
