@@ -4,10 +4,23 @@ using UtrkePasa.Server;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Repository;
 using System.Net;
+using UtrkePasa.Infrastructure;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using System.Reflection.Metadata.Ecma335;
 
 Env.Load("../.env");
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+var applicationUrl = builder.Configuration["urls"];
+
+if (string.IsNullOrEmpty(applicationUrl))
+    throw new InvalidOperationException("Application URL nije postavljen.");
+
+var port = new Uri(applicationUrl).Port;
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?.Replace("{DB_PASSWORD}", Environment.GetEnvironmentVariable("DB_PASSWORD"));
@@ -28,14 +41,48 @@ builder.Services.AddSingleton<MessageBus>();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RacePublisher>();
 builder.Services.AddHostedService<ServerRace>();
+
+public class RunningPort : IRunningPort
+{
+    private IServer _servicer;
+
+    public RunningPort(IServer servicer)
+    {
+        _servicer = servicer;
+    }
+
+    public int GetPort ()
+    {
+        var addresses = _servicer.Features.Get<ServerAddressesFeature>();
+        var first = addresses?.Addresses.FirstOrDefault();
+        return int.Parse(first.Split(':')[1]);
+    }
+} 
+
+
+builder.Services.AddSingleton<ServiceDiscovery>(builder.get, );
+
+
+builder.Services.AddHostedService(sp =>
+    sp.GetRequiredService<ServiceDiscovery>());
+
 /* builder.Services.AddHostedService<JobProcessingServer>();
  */
-var app = builder.Build();
 
+
+var app = builder.Build();
 app.Services.GetRequiredService<TicketProcessor>();
 app.Services.GetRequiredService<FiscalizeClosedRace>();
 
+/* var serviceDiscovery = app.Services.GetRequiredService<ServiceDiscovery>();
 
+await serviceDiscovery.RegisterAsync("UtrkePasa.Server");
+
+app.Lifetime.ApplicationStopped.Register( () =>
+
+    serviceDiscovery.ShutingDownRegisterAsync().GetAwaiter().GetResult()
+
+); */
 
 app.MapHub<RaceHub>("/raceHub");
 

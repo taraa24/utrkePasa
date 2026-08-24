@@ -1,8 +1,10 @@
 
+using UtrkePasa.Infrastructure;
+
 namespace UtrkePasa.Server;
 
 public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus,
-    ILogger<ServerRace> logger,RacePublisher racePublisher) : BackgroundService
+    ILogger<ServerRace> logger,RacePublisher racePublisher, ServiceDiscovery serviceDiscovery) : BackgroundService
 {
 
     private readonly RunningRace _runningRace = new(scopeFactory, messageBus, new RaceSimulator(), logger, racePublisher);
@@ -14,6 +16,8 @@ public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus
         {
             try 
             {
+                /* await serviceDiscovery.UpdateTimestamp();
+                await serviceDiscovery.UpdateLeader(); */
                 await _runningRace.CheckSteps();                
             }
             catch(Exception ex)

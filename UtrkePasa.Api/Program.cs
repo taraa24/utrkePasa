@@ -6,6 +6,7 @@ using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Api.Middleware;
 using UtrkePasa.Api.Handler;
 using UtrkePasa.Api;
+using UtrkePasa.Infrastructure;
 
 
 Env.Load("../.env");
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IPayingHandler, PayingHandler>();
 builder.Services.AddScoped<IDogRepository,DogRepository>();
 builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
+builder.Services.AddSingleton<ServiceDiscovery>();
 builder.Services.AddSingleton<CurrRaceState>();
 
 builder.Services.AddHostedService<RaceSubscriber>();

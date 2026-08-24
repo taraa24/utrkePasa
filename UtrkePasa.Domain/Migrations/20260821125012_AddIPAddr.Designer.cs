@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UtrkePasa.Domain.DataBase;
@@ -12,13 +13,15 @@ using UtrkePasa.Domain.DataBase;
 namespace UtrkePasa.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260821125012_AddIPAddr")]
+    partial class AddIPAddr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.11")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -144,14 +147,6 @@ namespace UtrkePasa.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ip_addr");
-
-                    b.Property<bool>("isLeader")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_leader");
-
-                    b.Property<int>("port")
-                        .HasColumnType("integer")
-                        .HasColumnName("port");
 
                     b.Property<DateTimeOffset?>("timestamp")
                         .HasColumnType("timestamp with time zone")
