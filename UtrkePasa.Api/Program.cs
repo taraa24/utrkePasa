@@ -56,8 +56,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.MapControllers();
+
 
 app.UseMiddleware<MyExceptionMiddleware>();
+app.UseMiddleware<RequestLimitMiddleware>();
+app.MapControllers();
 
 app.Run();

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UtrkePasa.Api.Dtos;
 using UtrkePasa.Api.Handler;
+using UtrkePasa.Api.Services;
 
 namespace UtrkePasa.Api.Controllers;
 
@@ -8,7 +9,6 @@ namespace UtrkePasa.Api.Controllers;
 [ApiController]
 public class TicketPurchaseController : ControllerBase
 {
-    
     private readonly IPayingHandler _payingHandler;
 
     public TicketPurchaseController(IPayingHandler payingHandler)
@@ -17,8 +17,10 @@ public class TicketPurchaseController : ControllerBase
     }
 
     [HttpPost]
+    [RequestLimit(10)]
     public async Task<ActionResult> PurchaseTicket([FromBody]TicketPurchaseRequest request)
     {
+        await Task.Delay(5000);
         var ticket = await _payingHandler.HandlePaymentAsync(request);
         return Ok(ticket);
     }

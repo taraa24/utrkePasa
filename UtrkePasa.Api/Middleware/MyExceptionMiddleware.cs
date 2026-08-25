@@ -26,6 +26,11 @@ public class MyExceptionMiddleware
             _logger.LogWarning(ex, ex.Message);
             await HandleValidationExceptionAsync(context, ex);
         }
+        catch(TooManyRequestsExcetions ex)
+        {
+            _logger.LogWarning(ex, ex.Message);
+            await HandleTooManyRequestsExceptionAsync(context, ex);
+        }
         catch (Exception ex)
         {   
             _logger.LogError(ex, ex.Message);
@@ -33,6 +38,18 @@ public class MyExceptionMiddleware
         }
     }
 
+    private static Task HandleTooManyRequestsExceptionAsync(HttpContext context, TooManyRequestsExcetions ex)
+    {
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
+
+        var response = new
+        {
+            message = ex.Message
+        };
+
+        return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    }
 
     private static Task HandleValidationExceptionAsync(HttpContext context, Exception exception)
     {
