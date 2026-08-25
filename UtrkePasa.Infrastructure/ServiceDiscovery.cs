@@ -132,9 +132,19 @@ public class ServiceDiscovery(
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+
         var timeout = DateTimeOffset.UtcNow.AddSeconds(-10);
-        var leaderExist = await context.Register.SingleOrDefaultAsync(leader => leader.appName == _appName && leader.isLeader && leader.timestamp != null && leader.timestamp > timeout);
-        if (leaderExist  == null) return;
+        var leaderExist = await context.Register.SingleOrDefaultAsync(leader => leader.appName == _appName && leader.isLeader );
+        if (leaderExist  == null)
+        {
+            await ClaimLeadership(context);
+            return;
+        }
+
+        if(leaderExist.timestamp != null && leaderExist.timestamp.Value > timeout)
+        {
+            return;
+        }
 
         await CleanLeadership(context, leaderExist);
         await ClaimLeadership(context);
@@ -157,9 +167,12 @@ public class ServiceDiscovery(
                 .ExecuteUpdateAsync(setters =>
                     setters.SetProperty(r => r.isLeader,
                         true)); //set leader = true, where heartbeat missed x2 and appname == _appname and uuid == moj uuid
-
+            Console.WriteLine("ejjjjjjjjjjjjjjjjjjjjjjjj"+updated);
             if (updated == 1)
                 IAmTheLeader = true;
+
+
+            Console.WriteLine(IAmTheLeader);
         }
         catch (Exception e)
         {

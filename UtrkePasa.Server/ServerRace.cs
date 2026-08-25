@@ -12,20 +12,20 @@ public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {        
+        
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (!_serviceDiscovery.IAmTheLeader)
-            {
-                await Task.Delay(1000, stoppingToken);
-                return;
-            }
-            
             
             try 
             {
                 /* await serviceDiscovery.UpdateTimestamp();
                 await serviceDiscovery.UpdateLeader(); */
-                await _runningRace.CheckSteps();                
+                 if (_serviceDiscovery.IAmTheLeader)
+                {
+                    await _runningRace.CheckSteps();    
+                }
+
+                            
             }
             catch(Exception ex)
             {

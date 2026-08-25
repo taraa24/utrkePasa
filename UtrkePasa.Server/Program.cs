@@ -35,12 +35,11 @@ builder.Services.AddHostedService<ServerRace>();
 
 builder.Services.AddSingleton<ServiceDiscovery>();
 
+/* builder.Services.AddHostedService<JobProcessingServer>();
+ */
 
 builder.Services.AddHostedService(sp =>
     sp.GetRequiredService<ServiceDiscovery>());
-
-/* builder.Services.AddHostedService<JobProcessingServer>();
- */
 
 builder.Services.Configure<ServiceDiscoveryConfiguration>(builder.Configuration.GetSection("ServiceDiscoveryConfiguration"));
 var app = builder.Build();

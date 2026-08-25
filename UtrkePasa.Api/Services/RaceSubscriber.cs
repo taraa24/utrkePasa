@@ -44,7 +44,7 @@ public class RaceSubscriber : IHostedService
         if(leader == null)
             throw new InvalidOperationException("nema leadera");
 
-        var url = $"http://{leader.ipAddr}:{leader.port}/racehub";
+        var url = $"http://localhost:{leader.port}/racehub";
 
         _connection = new HubConnectionBuilder().WithUrl(url).WithAutomaticReconnect().Build();
 
