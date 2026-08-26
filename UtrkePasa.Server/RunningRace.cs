@@ -54,7 +54,9 @@ ILogger logger, RacePublisher racePublisher)
             JobType = ProcessingJobType.RaceFinished,
             JobStatus = "Pending",
             RaceId = race.RaceId,
-            winnerOfRace = race.ResultOfRace
+            winnerOfRace = race.ResultOfRace,
+            dogFinalePositions = race.DogFinalePosition,
+
         };
 
         /* var FiscalizeJob = new JobProcessing

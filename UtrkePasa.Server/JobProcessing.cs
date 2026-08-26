@@ -12,5 +12,5 @@ public class JobProcessing
     public string JobStatus { get; set; } = "Pending";
     public int RaceId { get; set; }
     public string winnerOfRace{get;set;} = string.Empty;
-
+    public List<string> dogFinalePositions{get;set;} = new List<string>();
 }

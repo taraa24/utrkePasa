@@ -38,6 +38,9 @@ public class ValidateTicketService : IValidationService
         else if(race.StartOfTheRace <= DateTimeOffset.Now)
         {
             return new ValidationResult { IsFailed = true, ErrorCode = "err: race began, time for gambling over" };
+        }else if(request.oddType == "")
+        {
+            return new ValidationResult{ IsFailed = true, ErrorCode = "err: invalid oddtype"};
         }
         request.RaceId = race.RaceId;
         Console.WriteLine("validacija se obradivala");

@@ -21,6 +21,9 @@ public class Ticket
     [Column("expected_Result")]
     public string ExpectedResult { get; set; } = string.Empty;
 
+    [Column("odd_Type")]
+    public string oddType{get;set;} = string.Empty;
+
     [Column("user_Id")]
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }

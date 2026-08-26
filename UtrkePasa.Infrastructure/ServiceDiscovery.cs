@@ -167,12 +167,8 @@ public class ServiceDiscovery(
                 .ExecuteUpdateAsync(setters =>
                     setters.SetProperty(r => r.isLeader,
                         true)); //set leader = true, where heartbeat missed x2 and appname == _appname and uuid == moj uuid
-            Console.WriteLine("ejjjjjjjjjjjjjjjjjjjjjjjj"+updated);
             if (updated == 1)
                 IAmTheLeader = true;
-
-
-            Console.WriteLine(IAmTheLeader);
         }
         catch (Exception e)
         {

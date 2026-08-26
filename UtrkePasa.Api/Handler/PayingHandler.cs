@@ -48,7 +48,8 @@ public class PayingHandler : IPayingHandler
             PlacedAt = DateTimeOffset.UtcNow,
             RaceOddsId = request.RaceOddsId,
             PaidForTicket = request.PaidForTicket,
-            ExpectedResult = request.ExpectedResult
+            ExpectedResult = request.ExpectedResult,
+            oddType = request.oddType
 
         };
 
@@ -61,7 +62,9 @@ public class PayingHandler : IPayingHandler
             TicketId = ticket.TicketId,
             RaceId = ticket.RaceId,
             PlacedAt = DateTimeOffset.UtcNow,
-            PaidForTicket = ticket.PaidForTicket
+            PaidForTicket = ticket.PaidForTicket,
+            ExpectedResult = ticket.ExpectedResult,
+            oddType = ticket.oddType
         };
     }
 }

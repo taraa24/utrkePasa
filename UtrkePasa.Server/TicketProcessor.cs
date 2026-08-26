@@ -42,9 +42,17 @@ public class TicketProcessor : ISubsriber
             if (_unprocessedTicketsForThisRace.Count == 0)
                 break;
 
+            var finalPositions = job.dogFinalePositions.Select(x => x.Split(':')).Where(x => x.Length == 2 && int.TryParse(x[1], out _))
+                                                        .ToDictionary(x => x[0], x => int.Parse(x[1]));
+
+
             foreach (var ticket in _unprocessedTicketsForThisRace)
             {
-                ticket.IsWinningTicket = ticket.ExpectedResult == job.winnerOfRace;
+
+                var expectedPositions = ticket.oddType.Select(c => int.Parse(c.ToString())).ToList();
+
+                ticket.IsWinningTicket = finalPositions.TryGetValue(ticket.ExpectedResult,out var actualPosition)&& expectedPositions.Contains(actualPosition);
+
                 Console.WriteLine(
                 $"Ticket {ticket.TicketId}: " +
                     $"{((bool)ticket.IsWinningTicket ? "DOBITAN" : "NIJE DOBITAN")}"
