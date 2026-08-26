@@ -10,7 +10,7 @@ public class RequestLimitMiddleware
     public RequestLimitMiddleware(RequestDelegate next)
     {
         _next = next;
-        _semaphore = new SemaphoreSlim(10, 10);
+        _semaphore = new SemaphoreSlim(10, 10); // inicijaln i maksimalan broj requestova
     }
 
     public async Task InvokeAsync(HttpContext context)

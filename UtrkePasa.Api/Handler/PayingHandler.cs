@@ -11,12 +11,14 @@ public class PayingHandler : IPayingHandler
     private readonly IValidationService _validationService;
     private readonly IFiscalizeTicketService _fiscalizeTicketService;
     private readonly ITicketRepository _ticketRepository;
+    private readonly CurrRaceState _currRaceState;
 
-    public PayingHandler(IValidationService validationService, IFiscalizeTicketService fiscalizeTicketService, ITicketRepository ticketRepository)
+    public PayingHandler(IValidationService validationService, IFiscalizeTicketService fiscalizeTicketService, ITicketRepository ticketRepository, CurrRaceState currRaceState)
     {
         _validationService = validationService;
         _fiscalizeTicketService = fiscalizeTicketService;
         _ticketRepository = ticketRepository;
+        _currRaceState = currRaceState;
     }
    
 
@@ -32,6 +34,11 @@ public class PayingHandler : IPayingHandler
                 ErrorCode = validationResult.ErrorCode
             };
 
+
+        var race = _currRaceState.GetCurrRace();
+        var raceOdds = await _ticketRepository.GetRaceOddsAsync(race.RaceId, request.oddType);
+
+        
         var fiscalizationResult = await _fiscalizeTicketService.FiscalizationAsync(request);
         if (fiscalizationResult.IsFailed)
             return new TicketPurchaseResponse
@@ -44,12 +51,12 @@ public class PayingHandler : IPayingHandler
         var ticket = new Ticket
         {
             UserId = request.UserId,
-            RaceId = request.RaceId!.Value,
+            RaceId = race.RaceId,
             PlacedAt = DateTimeOffset.UtcNow,
-            RaceOddsId = request.RaceOddsId,
             PaidForTicket = request.PaidForTicket,
             ExpectedResult = request.ExpectedResult,
-            oddType = request.oddType
+            oddType = request.oddType,
+            RaceOddsId = raceOdds.RaceOddsId
 
         };
 

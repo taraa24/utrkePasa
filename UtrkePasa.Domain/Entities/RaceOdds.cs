@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace UtrkePasa.Domain.Entities;
 public class RaceOdds
@@ -17,6 +18,8 @@ public class RaceOdds
     [Column("race_Id")]
     [ForeignKey(nameof(Race))]
     public int RaceId{get; set;}
+    
+    [JsonIgnore]
     public Race? Race {get;set;} // = null!;
     
 }

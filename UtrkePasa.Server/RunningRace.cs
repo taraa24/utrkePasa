@@ -6,7 +6,7 @@ using UtrkePasa.Domain.Enum;
 namespace UtrkePasa.Server;
 
 public class RunningRace(IServiceScopeFactory scopeFactory, MessageBus _messageBus, RaceSimulator _simulator,  
-ILogger logger, RacePublisher racePublisher) 
+ILogger logger, RacePublisher racePublisher, OddsGenerator _oddsGenerator) 
 {
     private List<Race> _pendingRaces = new ();
     private List<Dog> _dogs = new();
@@ -134,12 +134,17 @@ ILogger logger, RacePublisher racePublisher)
 
         context.Race.Update(race);
 
+        var odds = _oddsGenerator.oddsGenerator(race);
+        var formatedOdds = _oddsGenerator.FormatOdds(race, odds);
+        context.RaceOdds.AddRange(odds);
+
         await context.SaveChangesAsync();
 
         await racePublisher.PublishRaceAsync(race); 
 
         logger.LogInformation("mozemmo se kladit");
         logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
+        logger.LogInformation("{odds}", formatedOdds);
     }
 
     private async ValueTask OpenNewRaces()

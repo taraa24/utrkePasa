@@ -8,7 +8,7 @@ public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus
 {
     private readonly ServiceDiscovery _serviceDiscovery = serviceDiscovery;
 
-    private readonly RunningRace _runningRace = new(scopeFactory, messageBus, new RaceSimulator(), logger, racePublisher);
+    private readonly RunningRace _runningRace = new(scopeFactory, messageBus, new RaceSimulator(), logger, racePublisher, new OddsGenerator());
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {        

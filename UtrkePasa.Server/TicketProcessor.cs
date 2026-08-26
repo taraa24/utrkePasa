@@ -42,8 +42,7 @@ public class TicketProcessor : ISubsriber
             if (_unprocessedTicketsForThisRace.Count == 0)
                 break;
 
-            var finalPositions = job.dogFinalePositions.Select(x => x.Split(':')).Where(x => x.Length == 2 && int.TryParse(x[1], out _))
-                                                        .ToDictionary(x => x[0], x => int.Parse(x[1]));
+            var finalPositions = job.dogFinalePositions.Select(x => x.Split(':')).Where(x => x.Length == 2 && int.TryParse(x[1], out _)).ToDictionary(x => x[0], x => int.Parse(x[1]));
 
 
             foreach (var ticket in _unprocessedTicketsForThisRace)
