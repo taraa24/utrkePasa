@@ -35,7 +35,7 @@ public class TicketPurchaseClient
 
         foreach(var ticket in tickets)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/ticketpurchase", ticket);
+            await _httpClient.PostAsJsonAsync("api/ticketpurchase", ticket);
         }
 
         
