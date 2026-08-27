@@ -20,7 +20,7 @@ public class TicketPurchaseController : ControllerBase
     [RequestLimit(5)]
     public async Task<ActionResult> PurchaseTicket([FromBody]TicketPurchaseRequest request)
     {
-        await Task.Delay(5000);
+        //await Task.Delay(5000);
         var ticket = await _payingHandler.HandlePaymentAsync(request);
         return Ok(ticket);
     }

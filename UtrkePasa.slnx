@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="UtrkePasa.Api/UtrkePasa.Api.csproj" />
+  <Project Path="UtrkePasa.ConsolApp/UtrkePasa.ConsolApp.csproj" />
   <Project Path="UtrkePasa.Domain/UtrkePasa.Domain.csproj" />
   <Project Path="UtrkePasa.Infrastructure/UtrkePasa.Infrastructure.csproj" />
   <Project Path="UtrkePasa.Testing/UtrkePasa.Testing.csproj" />

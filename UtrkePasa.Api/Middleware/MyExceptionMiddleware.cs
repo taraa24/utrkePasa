@@ -59,6 +59,7 @@ public class MyExceptionMiddleware
         var response = new { message = "An unexpected error occurred.", details = exception.Message };
         return context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
+    
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";

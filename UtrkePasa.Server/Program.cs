@@ -3,11 +3,8 @@ using UtrkePasa.Domain.DataBase;
 using UtrkePasa.Server;
 using Microsoft.EntityFrameworkCore;
 using UtrkePasa.Domain.Repository;
-using System.Net;
 using UtrkePasa.Infrastructure;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using System.Reflection.Metadata.Ecma335;
+
 
 Env.Load("../.env");
 
@@ -29,7 +26,7 @@ builder.Services.AddSingleton<FiscalizeClosedRace>();
 builder.Services.AddSingleton<MessageBus>();
 
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<RacePublisher>();
+builder.Services.AddSingleton<RacePublisherSErver>();
 builder.Services.AddSingleton<IRunningPort,RunningPort>();
 builder.Services.AddHostedService<ServerRace>();
 

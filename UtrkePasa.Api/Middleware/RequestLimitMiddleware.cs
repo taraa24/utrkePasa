@@ -28,7 +28,7 @@ public class RequestLimitMiddleware
         }
 
         var _semaphore = _semaphores.GetOrAdd(
-            endpoint,
+            endpoint!,
             _ => new SemaphoreSlim(attribute.Limit, attribute.Limit));
 
 

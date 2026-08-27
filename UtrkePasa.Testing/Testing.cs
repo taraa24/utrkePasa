@@ -31,7 +31,6 @@ public class Testing
             UserId = 1,
             PlacedAt = DateTimeOffset.UtcNow,
             ExpectedResult = GetRandomExpectedResult(),
-            RaceOddsId = 2,
             PaidForTicket = 10
         };
 

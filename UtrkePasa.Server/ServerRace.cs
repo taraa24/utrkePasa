@@ -4,7 +4,7 @@ using UtrkePasa.Infrastructure;
 namespace UtrkePasa.Server;
 
 public class ServerRace(IServiceScopeFactory scopeFactory, MessageBus messageBus,
-    ILogger<ServerRace> logger,RacePublisher racePublisher, ServiceDiscovery serviceDiscovery) : BackgroundService
+    ILogger<ServerRace> logger,RacePublisherSErver racePublisher, ServiceDiscovery serviceDiscovery) : BackgroundService
 {
     private readonly ServiceDiscovery _serviceDiscovery = serviceDiscovery;
 

@@ -6,7 +6,7 @@ using UtrkePasa.Domain.Enum;
 namespace UtrkePasa.Server;
 
 public class RunningRace(IServiceScopeFactory scopeFactory, MessageBus _messageBus, RaceSimulator _simulator,  
-ILogger logger, RacePublisher racePublisher, OddsGenerator _oddsGenerator) 
+ILogger logger, RacePublisherSErver racePublisherSErver, OddsGenerator _oddsGenerator) 
 {
     private List<Race> _pendingRaces = new ();
     private List<Dog> _dogs = new();
@@ -77,8 +77,7 @@ ILogger logger, RacePublisher racePublisher, OddsGenerator _oddsGenerator)
         _pendingRaces.Remove(race);
         _dogRacestates.Clear();
 
-        
-
+        await racePublisherSErver.PublishRaceAsync(race);
         logger.LogInformation("Finishhh");
         logger.LogInformation("Pobjednik jee {Winner}", race.ResultOfRace);
 
@@ -116,6 +115,7 @@ ILogger logger, RacePublisher racePublisher, OddsGenerator _oddsGenerator)
         context.Race.Update(race);
         await context.SaveChangesAsync();
 
+        await racePublisherSErver.PublishRaceAsync(race);
 
         Console.WriteLine("Startt");
         logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));
@@ -140,7 +140,7 @@ ILogger logger, RacePublisher racePublisher, OddsGenerator _oddsGenerator)
 
         await context.SaveChangesAsync();
 
-        await racePublisher.PublishRaceAsync(race); 
+        await racePublisherSErver.PublishRaceAsync(race); 
 
         logger.LogInformation("mozemmo se kladit");
         logger.LogInformation("U utrci su {Dogs}", string.Join(", ", race.DogStartingPosition));

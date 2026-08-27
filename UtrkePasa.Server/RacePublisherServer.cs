@@ -4,12 +4,12 @@ using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.Server;
 
-public class RacePublisher
+public class RacePublisherSErver
 {
 
     private readonly IHubContext<RaceHub> _hubContext;
 
-    public RacePublisher(IHubContext<RaceHub> hubContext)
+    public RacePublisherSErver(IHubContext<RaceHub> hubContext)
     {
         _hubContext = hubContext;
     }

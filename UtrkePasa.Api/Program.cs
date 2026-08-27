@@ -36,6 +36,7 @@ builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
 builder.Services.AddSingleton<ServiceDiscovery>();
 builder.Services.AddSingleton<CurrRaceState>();
+builder.Services.AddSingleton<RcaePublisherApi>();
 
 builder.Services.AddSingleton<IRunningPort, ApiRunningPort>();
 
@@ -57,9 +58,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
 app.UseMiddleware<MyExceptionMiddleware>();
 app.UseMiddleware<RequestLimitMiddleware>();
 app.MapControllers();
+
+app.MapHub<RaceHub>("/raceHubApi");
 
 app.Run();
