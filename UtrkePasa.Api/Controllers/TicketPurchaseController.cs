@@ -17,7 +17,7 @@ public class TicketPurchaseController : ControllerBase
     }
 
     [HttpPost]
-    [RequestLimit(10)]
+    [RequestLimit(5)]
     public async Task<ActionResult> PurchaseTicket([FromBody]TicketPurchaseRequest request)
     {
         await Task.Delay(5000);
