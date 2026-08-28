@@ -13,18 +13,21 @@ public class RcaePublisherApi
         _hubContext = hubContext;
     }
 
-    public async Task RaceOpenFoGambling(Race race)
+    public async Task RaceOpenFoGambling()
     {
-        await _hubContext.Clients.All.SendAsync("OpenForGambling", race);
+        await _hubContext.Clients.All.SendAsync("OpenForGambling");
+        
     }
 
-    public async Task RaceStarted(Race race)
+    public async Task RaceStarted()
     {
-        await _hubContext.Clients.All.SendAsync("raceStarted", race);
+        await _hubContext.Clients.All.SendAsync("raceStarted");
+        
     }
 
-    public async Task RaceFinished(Race race)
+    public async Task RaceFinished()
     {
-        await _hubContext.Clients.All.SendAsync("raceFinished", race);
+        await _hubContext.Clients.All.SendAsync("raceFinished");
+        
     }
 }

@@ -1,36 +1,31 @@
+using System.Reflection.Metadata;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using UtrkePasa.Domain.Entities;
 
 namespace UtrkePasa.ConsoleApp;
 
 public class RaceSubscriber
 {
-    private HubConnection _connection;
-    private readonly CurrRaceState _currRaceState;
 
-    public RaceSubscriber(CurrRaceState currRaceState)
+    private HubConnection _connection;
+    //Property HubConnection _connection {private set; get;}
+
+    private readonly HandlerOnConnectionEvent _handlerOnConnectionEvent;
+
+
+
+    public RaceSubscriber(HandlerOnConnectionEvent handlerOnConnectionEvent)
     {
-        _currRaceState = currRaceState;
+
+        _handlerOnConnectionEvent = handlerOnConnectionEvent;
 
         _connection = new HubConnectionBuilder().WithUrl("http://localhost:5057/raceHubApi").WithAutomaticReconnect().Build();
-        _connection.On<Race>("OpenForGambling", race =>
-        {
-            _currRaceState.SetRace(race);
-            Console.WriteLine("kladenje je krenilo mozete se kladiti sve dok ne krene utrka");
-            Console.WriteLine("Upisi broj tiketa koji zelis uplatit");
-        } );
-        _connection.On<Race>("raceStarted", race =>
-        {
-            _currRaceState.SetRace(race);
-            Console.WriteLine("startt utrka je krenila nema vise kladenja");
-            
-        });
-        _connection.On<Race>("raceFinished", race =>
-        {
-            _currRaceState.SetRace(race);
-            Console.WriteLine("finishh utrka je zavrsila");
-        }
-        );
+        
+        _connection.On("OpenForGambling", _handlerOnConnectionEvent.HandleOpenBettingAsync);
+        _connection.On("raceStarted", _handlerOnConnectionEvent.HandleStartingRace);
+        _connection.On("raceFinished", _handlerOnConnectionEvent.HandleFinishRace);
+
     }
 
     public async Task StartAsync()

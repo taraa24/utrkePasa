@@ -37,6 +37,7 @@ builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 builder.Services.AddSingleton<ServiceDiscovery>();
 builder.Services.AddSingleton<CurrRaceState>();
 builder.Services.AddSingleton<RcaePublisherApi>();
+builder.Services.AddSingleton<RaceEventHandler>();
 
 builder.Services.AddSingleton<IRunningPort, ApiRunningPort>();
 

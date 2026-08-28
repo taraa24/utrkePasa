@@ -35,7 +35,14 @@ public class TicketPurchaseClient
 
         foreach(var ticket in tickets)
         {
-            await _httpClient.PostAsJsonAsync("api/ticketpurchase", ticket);
+            var response = await _httpClient.PostAsJsonAsync(
+            "api/ticketpurchase",
+            ticket);
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"Status: {(int)response.StatusCode}");
+            Console.WriteLine($"Response: {body}");
         }
 
         
@@ -46,7 +53,7 @@ public class TicketPurchaseClient
     {
         var tickets = new List<TicketPurchaseRequest>();
 
-        for(int i = 0; i <= numOfTickets; i++)
+        for(int i = 0; i < numOfTickets; i++)
         {
             var userId = _random.Next(1,3);
             var PaidForTicket = _random.Next(10, 1001);

@@ -182,7 +182,9 @@ public class ServiceDiscovery(
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        return await context.Register.Where(r => r.isLeader && r.timestamp != null).FirstOrDefaultAsync();
+        var timeout = DateTimeOffset.UtcNow.AddSeconds(-10);
+
+        return await context.Register.Where(r => r.isLeader && r.timestamp != null && r.timestamp > timeout).FirstOrDefaultAsync();
     }
 }
 

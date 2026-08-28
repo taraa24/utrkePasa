@@ -7,8 +7,8 @@ app.Run(); */
 
 using UtrkePasa.ConsoleApp;
 
-var raceState = new CurrRaceState();
-var raceSubscriber = new RaceSubscriber(raceState);
+var handler = new HandlerOnConnectionEvent();
+var raceSubscriber = new RaceSubscriber(handler);
 
 using var httpClient = new HttpClient
 {

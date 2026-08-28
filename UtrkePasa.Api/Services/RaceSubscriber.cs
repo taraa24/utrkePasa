@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.SignalR.Client;
+using Npgsql.Internal;
 using UtrkePasa.Domain.Entities;
 using UtrkePasa.Infrastructure;
 
@@ -7,40 +8,23 @@ namespace UtrkePasa.Api.Services;
 
 public class RaceSubscriber : IHostedService
 {
-    private  HubConnection _connection;
-    private readonly CurrRaceState _currRaceState;
+    private  HubConnection? _connection;
     private readonly ServiceDiscovery _serviceDiscovery;
-    private readonly RcaePublisherApi _racePublisherApi;
+    private readonly RaceEventHandler _raceEventHandler;
 
-    public RaceSubscriber(CurrRaceState currRaceState, ServiceDiscovery serviceDiscovery, RcaePublisherApi racePublisherApi)
+    public RaceSubscriber(ServiceDiscovery serviceDiscovery, RaceEventHandler raceEventHandler)
     {
-        _currRaceState = currRaceState;
         _serviceDiscovery = serviceDiscovery;
-        _racePublisherApi = racePublisherApi;
-/* 
-        _connection = new HubConnectionBuilder().WithUrl(
-            "http://localhost:5000/racehub").WithAutomaticReconnect().Build();
-
-       _connection.On<Race>("RaceUpdated", race => _currRaceState.SetCurrRace(race)); */
-      /*  _connection.Closed += OnClose(); */
-       
+        _raceEventHandler = raceEventHandler;
     }
-
-/*     private  Func<Exception?, Task> OnClose()
-    {
-        //Ciscenje _connection ;
-        _connection.DisposeAsync().GetAwaiter().GetResult();
-
-          _connection = new HubConnectionBuilder().WithUrl(
-            "http://localhost:5000/racehub").WithAutomaticReconnect().Build();
-
-       _connection.On<Race>("RaceUpdated", race => _currRaceState.SetCurrRace(race));
-       _connection.Closed += OnClose();
-    } */
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        
+        await ConnectingOnLeaderAsync(cancellationToken);
+    }
+
+    private async Task ConnectingOnLeaderAsync(CancellationToken cancellationToken)
+    {
         var leader = await _serviceDiscovery.GetLeaderAsync();
 
         if(leader == null)
@@ -48,25 +32,59 @@ public class RaceSubscriber : IHostedService
 
         var url = $"http://localhost:{leader.port}/racehub";
 
-        _connection = new HubConnectionBuilder().WithUrl(url).WithAutomaticReconnect().Build();
+        _connection = new HubConnectionBuilder().WithUrl(url).Build();
+        _connection.On<Race>("RaceUpdated",  race => _raceEventHandler.HandleAsync(race));
 
-        _connection.On<Race>("RaceUpdated", async race =>
-        {
-            _currRaceState.SetCurrRace(race);
+        _connection.Closed += OnConnectionClosed;
 
-            if(race.RaceStatus == "Open")
-                await _racePublisherApi.RaceOpenFoGambling(race);
-
-            if(race.RaceStatus == "InProgress")
-                await _racePublisherApi.RaceStarted(race);
-
-            if(race.EndOfTheRace <= DateTimeOffset.UtcNow)
-                await _racePublisherApi.RaceFinished(race);
-
-
-        });
-        
         await _connection.StartAsync(cancellationToken);
+        
+    }
+
+    private async Task OnConnectionClosed(Exception? exception)
+    {
+        Console.WriteLine("konekcija sa signalR prekinuta");
+
+        if(exception != null)
+            Console.WriteLine($"greska   {exception.Message}");
+        
+        await ReconnectAsync();
+    }
+
+    private async Task ReconnectAsync()
+    {
+        while (true)
+        {
+            try
+            {
+                await Task.Delay(5000);
+                var leader = await _serviceDiscovery.GetLeaderAsync();
+
+                if(leader == null)
+                {
+                    await Task.Delay(5000);
+                    continue;
+                }
+
+                var url = $"http://localhost:{leader.port}/racehub";
+
+                await _connection!.DisposeAsync();
+
+                _connection = new HubConnectionBuilder().WithUrl(url).Build();
+                _connection.On<Race>("RaceUpdated",  race => _raceEventHandler.HandleAsync(race));
+
+                _connection.Closed += OnConnectionClosed;
+
+                await _connection.StartAsync();
+                return;
+                    
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}");
+                await Task.Delay(5000);
+            }
+        }
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
