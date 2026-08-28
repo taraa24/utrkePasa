@@ -177,14 +177,14 @@ public class ServiceDiscovery(
         
     }
 
-    public async Task<Register?> GetLeaderAsync()
+    public async Task<Register?> GetLeaderAsync(string appName)
     {
         using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var timeout = DateTimeOffset.UtcNow.AddSeconds(-10);
 
-        return await context.Register.Where(r => r.isLeader && r.timestamp != null && r.timestamp > timeout).FirstOrDefaultAsync();
+        return await context.Register.Where(r => r.isLeader && r.timestamp != null && r.timestamp > timeout && r.appName == appName).FirstOrDefaultAsync();
     }
 }
 

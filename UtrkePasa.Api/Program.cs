@@ -35,11 +35,18 @@ builder.Services.AddScoped<IDogRepository,DogRepository>();
 builder.Services.AddScoped<IRaceRepository,RaceRepository>();
 
 builder.Services.AddSingleton<ServiceDiscovery>();
+
+
 builder.Services.AddSingleton<CurrRaceState>();
 builder.Services.AddSingleton<RcaePublisherApi>();
 builder.Services.AddSingleton<RaceEventHandler>();
 
 builder.Services.AddSingleton<IRunningPort, ApiRunningPort>();
+
+builder.Services.Configure<HubConfig>(builder.Configuration.GetSection("HubConnection"));
+
+builder.Services.AddSingleton<MyHubConnection>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<MyHubConnection>());
 
 builder.Services.AddHostedService<RaceSubscriber>();
 
